@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CourseAuditMapper">
+    <select id="pageCourseAudit" resultType="CourseAudit">
+        select * from course_audit where delete_state=0 order by audit_state, audit_time desc
+    </select>
+    <select id="totalCourseAudit" resultType="CourseAudit">
+        select * from course_audit where delete_state=0;
+    </select>
+    <insert id="addCourseAuditInfo" parameterType="CourseAudit">
+        insert into course_audit (course_id, course_name, publisher_id, publisher) values
+            (#{courseId},#{courseName},#{publisherId},#{publisher})
+    </insert>
+    <update id="updateCourseAudit" parameterType="int">
+        update course_audit set audit_state=#{auditState} where course_id=#{courseId} and audit_state!=3;
+    </update>
+    <select id="searchCourseAudit" parameterType="CourseAudit" resultType="CourseAudit">
+        select * from course_audit where delete_state=0
+                <if test="courseName!=null and courseName!=''">
+                    and course_name like concat('%',#{courseName},'%')
+                </if>
+    </select>
+    <select id="totalSearchCourseAudit" parameterType="CourseAudit" resultType="CourseAudit">
+        select * from course_audit where delete_state=0
+        <if test="courseName!=null and courseName!=''">
+            and course_name like concat('%',#{courseName},'%')
+        </if>
+    </select>
+    <update id="addCourseAuditRemark" parameterType="CourseAudit">
+        update course_audit set reviewer_id=#{reviewerId},reviewer=#{reviewer},remark=#{remark},audit_state=#{auditState},audit_time=#{auditTime} where course_id=#{courseId} and audit_state=0;
+    </update>
+    <select id="queryRefuseCause" parameterType="int" resultType="String">
+        select remark from course_audit where course_id=#{courseId} and audit_state=2;
+    </select>
+    <select id="queryAuditStateById" parameterType="int" resultType="int">
+        select audit_state from course_audit where audit_id=#{auditId};
+    </select>
+</mapper>

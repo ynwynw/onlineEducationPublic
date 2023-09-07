@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.ResourceListMapper">
+    <select id="queryPageResourceList" resultType="ResourceList">
+        select * from resource_list where delete_state=0 order by audit_state
+    </select>
+    <select id="queryTotalResource" resultType="ResourceList">
+        select * from resource_list where delete_state=0;
+    </select>
+    <select id="searchResource" parameterType="ResourceList" resultType="ResourceList">
+        select * from resource_list where delete_state=0
+                    <if test="resourceId!=null">
+                        and resource_id=#{resourceId}
+                    </if>
+                    <if test="resourceName!=null and resourceName!=''">
+                        and resource_name like concat('%',#{resourceName},'%')
+                    </if>
+    </select>
+    <select id="totalSearchResource" parameterType="ResourceList" resultType="ResourceList">
+        select * from resource_list where delete_state=0
+        <if test="resourceId!=null">
+            and resource_id=#{resourceId}
+        </if>
+        <if test="resourceName!=null and resourceName!=''">
+            and resource_name like concat('%',#{resourceName},'%')
+        </if>
+    </select>
+    <select id="queryResourceById" parameterType="int" resultType="ResourceList">
+        select * from resource_list where resource_id=#{resourceId};
+    </select>
+    <insert id="addResource" parameterType="ResourceList">
+        insert into resource_list (resource_name, bread_coin,file_type, file_size, uploader, file_url, remark) VALUES
+                (#{resourceName},#{breadCoin},#{fileType},#{fileSize},#{uploader},#{fileUrl},#{remark});
+    </insert>
+    <update id="updateResource" parameterType="ResourceList">
+        update resource_list set resource_name=#{resourceName},bread_coin=#{breadCoin},file_type=#{fileType},file_size=#{fileSize},
+                                 file_url=#{fileUrl},remark=#{remark} where resource_id=#{resourceId};
+    </update>
+    <update id="updateResourceState">
+        update resource_list set publish_state=not publish_state,uploader=#{uploader} where resource_id=#{resourceId};
+    </update>
+    <update id="updateAuditState">
+        update resource_list set audit_state=#{auditState} where resource_id=#{resourceId};
+    </update>
+    <update id="deleteResourceById" parameterType="int">
+        update resource_list set delete_state=1 where resource_id=#{resourceId};
+    </update>
+    <select id="queryFileUrlById" parameterType="int" resultType="String">
+        select file_url from resource_list where resource_id=#{resourceId};
+    </select>
+    <select id="queryAllPublishAuditResource" resultType="ResourceList">
+        select * from resource_list where delete_state=0 and publish_state=1 and audit_state=1;
+    </select>
+</mapper>

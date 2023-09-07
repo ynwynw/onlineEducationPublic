@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>数据分析</title>
+    <base href="/">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+    <script src="/static/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <style>
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .top-panel > .layui-card-body{
+            padding: 0;
+            height: 50px;
+            color: #FFF;
+        }
+        .top-panel-number{
+            line-height:60px;
+            font-size: 30px;
+            border-right:1px solid #eceff9;
+        }
+        .top-panel-tips{
+            line-height:30px;
+            font-size: 12px
+        }
+        .layui-card-body{
+            padding: 10px 0;
+        }
+        .layui-card-header{
+            border-bottom:none;
+            top: 5px;
+            font-weight: 500 !important;
+            font-size: 18px;
+            color: #FFF;
+        }
+        .layui-card{
+            background: none!important;
+            border-radius: 7px;
+        }
+        .data-1{
+            background-image: linear-gradient(135deg, #ABDCFF 10%, #0396FF 100%) !important;
+        }
+        .data-2{
+            background-image: linear-gradient(135deg, #2AFADF 10%, #4C83FF 100%) !important;
+        }
+        .data-3{
+            background-image: linear-gradient(135deg, #FFD3A5 10%, #FD6585 100%) !important;
+        }
+        .data-4{
+            background-image: linear-gradient(135deg, #EE9AE5 10%, #5961F9 100%) !important;
+        }
+
+    </style>
+</head>
+<body>
+<!--<div class="layuimini-container">-->
+<div class="layuimini-main">
+    <div class="layui-row layui-col-space30">
+        <div class="layui-col-xs10 layui-col-md3">
+            <div class="layui-card top-panel  data-1">
+                <div class="layui-card-header">VIP用户数量</div>
+                <div class="layui-card-body">
+                    <div style="margin-top: 15px">
+                        <i class="layui-icon layui-icon-user" style="font-size: 30px;margin-right: 10px"></i>
+                        <cite style="font-size: 30px" th:text="${dataModel.VIPUserCount}"></cite>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-xs10 layui-col-md3">
+            <div class="layui-card top-panel data-2">
+                <div class="layui-card-header">VIP今日收益</div>
+                <div class="layui-card-body">
+                    <div style="margin-top: 15px">
+                        <i class="layui-icon layui-icon-diamond" style="font-size: 30px;margin-right: 10px"></i>
+                        <cite style="font-size: 30px" th:text="${dataModel.VIPTodayProfit}"></cite>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-xs10 layui-col-md3">
+            <div class="layui-card top-panel data-3">
+                <div class="layui-card-header">特训班今日收益</div>
+                <div class="layui-card-body">
+                    <div style="margin-top: 15px">
+                        <i class="layui-icon layui-icon-rmb" style="font-size: 30px;margin-right: 10px"></i>
+                        <cite style="font-size: 30px" th:text="${dataModel.coachTodayProfit}"></cite>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-xs10 layui-col-md3">
+            <div class="layui-card top-panel data-4">
+                <div class="layui-card-header">平台总收益</div>
+                <div class="layui-card-body">
+                    <div style="margin-top: 15px">
+                        <i class="layui-icon layui-icon-dollar" style="font-size: 30px;margin-right: 10px"></i>
+                        <cite style="font-size: 30px" th:text="${dataModel.totalProfit}"></cite>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs9">
+            <div id="echarts-records" style="background-color:#ffffff;min-height:450px;padding: 10px"></div>
+        </div>
+        <div class="layui-row layui-col-xs3">
+            <div id="echarts-pies" style="background-color:#ffffff;min-height:450px;padding: 10px"></div>
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs6">
+            <div id="echarts-dataset" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+        </div>
+        <div class="layui-col-xs6">
+            <div id="echarts-courseCount" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+        </div>
+    </div>
+
+</div>
+<script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script src="/static/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script th:inline="javascript">
+    let courses;
+    let countCourse;
+    let countGroupApply;
+    $(function (){
+        courses=[[${courses}]];
+        for(let i =courses.length;i<5;i++){
+            courses.push({courseName:'无',playCount:0});
+        }
+        countCourse=[[${countCourse}]];
+        for(let i =countCourse.length;i<5;i++){
+            countCourse.push({teacherName:'无',playCount:0,courseCount:0});
+        }
+        countGroupApply=[[${countGroupApply}]];
+        for(let i =countGroupApply.length;i<5;i++){
+            countGroupApply.push({courseName:'无',countNumber:0});
+        }
+    })
+    layui.use(['layer', 'echarts'], function () {
+        let $ = layui.jquery,
+            echarts = layui.echarts;
+
+        /**
+         * 报表功能
+         */
+        let echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+        let optionRecords = {
+            title: {
+                text: '特训班报名情况'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            legend: {
+                data: ['报名人数']
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: [countGroupApply[0].courseName,countGroupApply[2].courseName,countGroupApply[1].courseName,countGroupApply[4].courseName,countGroupApply[3].courseName]
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '报名人数',
+                    type: 'line',
+                    stack: '总量',
+                    areaStyle: {},
+                    data: [countGroupApply[0].countNumber,countGroupApply[2].countNumber,countGroupApply[1].countNumber,countGroupApply[4].countNumber,countGroupApply[3].countNumber]
+                }
+            ]
+        };
+        echartsRecords.setOption(optionRecords);
+
+
+        /**
+         * 玫瑰图表
+         */
+        let echartsPies = echarts.init(document.getElementById('echarts-pies'), 'walden');
+        let optionPies = {
+            title: {
+                text: '课程播放量',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                top:'35px',
+                data: [courses[0].courseName, courses[1].courseName, courses[2].courseName, courses[3].courseName, courses[4].courseName]
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '70%'],
+                    roseType: 'radius',
+                    data: [
+                        {value: courses[0].playCount, name: courses[0].courseName},
+                        {value: courses[1].playCount, name: courses[1].courseName},
+                        {value: courses[2].playCount, name: courses[2].courseName},
+                        {value: courses[3].playCount, name: courses[3].courseName},
+                        {value: courses[4].playCount, name: courses[4].courseName}
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        echartsPies.setOption(optionPies);
+
+
+        /**
+         * 柱状图
+         */
+        let echartsDataset = echarts.init(document.getElementById('echarts-dataset'), 'walden');
+
+        let optionDataset = {
+            title:{
+                text: '教师所讲授课程播放量',
+                left: 'center'
+            },
+            legend: {
+                left:'20px',
+                top:'35px'
+            },
+            tooltip: {},
+            dataset: {
+                dimensions: ['product','播放量'],
+                source: [
+                    {product: countCourse[0].teacherName,'播放量':countCourse[0].playCount},
+                    {product: countCourse[2].teacherName, '播放量':countCourse[2].playCount},
+                    {product: countCourse[1].teacherName,'播放量':countCourse[1].playCount},
+                    {product: countCourse[4].teacherName,'播放量':countCourse[4].playCount},
+                    {product: countCourse[3].teacherName,'播放量':countCourse[3].playCount}
+                ]
+            },
+            xAxis: {type: 'category'},
+            yAxis: {},
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [
+                {type: 'bar'},
+            ]
+        };
+
+        echartsDataset.setOption(optionDataset);
+
+        /**
+         * 柱状图
+         */
+        let CourseCount = echarts.init(document.getElementById('echarts-courseCount'), 'walden');
+
+        let CourseCountOption = {
+            title:{
+                text: '教师所讲授课程数量',
+                left: 'center'
+            },
+            legend: {
+                left:'20px',
+                top:'35px'
+            },
+            tooltip: {},
+            dataset: {
+                dimensions: ['product', '授课数量'],
+                source: [
+                    {product: countCourse[0].teacherName, '授课数量': countCourse[0].courseCount},
+                    {product: countCourse[2].teacherName, '授课数量': countCourse[2].courseCount},
+                    {product: countCourse[1].teacherName, '授课数量': countCourse[1].courseCount},
+                    {product: countCourse[4].teacherName, '授课数量': countCourse[4].courseCount},
+                    {product: countCourse[3].teacherName, '授课数量': countCourse[3].courseCount}
+                ]
+            },
+            xAxis: {type: 'category'},
+            yAxis: {},
+            series: [{
+                type: 'bar',
+                itemStyle:{
+                    normal:{
+                        color:'#6BE6C1'
+                    }
+                },
+            }]
+        };
+
+        CourseCount.setOption(CourseCountOption);
+
+
+        window.onresize = function () {
+            echartsRecords.resize();
+        }
+
+    });
+</script>
+</body>
+</html>

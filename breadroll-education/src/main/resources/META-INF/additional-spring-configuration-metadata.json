@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "spring.sa-token.token-name",
+      "type": "java.lang.String",
+      "description": "Description for spring.sa-token.token-name."
+    },
+    {
+      "name": "spring.sa-token.timeout",
+      "type": "java.lang.String",
+      "description": "Description for spring.sa-token.timeout."
+    },
+    {
+      "name": "spring.sa-token.activity-timeout",
+      "type": "java.lang.String",
+      "description": "Description for spring.sa-token.activity-timeout."
+    },
+    {
+      "name": "spring.sa-token.is-log",
+      "type": "java.lang.String",
+      "description": "Description for spring.sa-token.is-log."
+    },
+    {
+      "name": "spring.mail.from",
+      "type": "java.lang.String",
+      "description": "Description for spring.mail.from."
+    },
+    {
+      "name": "spring.mail.nickname",
+      "type": "java.lang.String",
+      "description": "Description for spring.mail.nickname."
+    }
+  ] }

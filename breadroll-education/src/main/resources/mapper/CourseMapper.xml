@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CourseMapper">
+    <!--查询所有课程-->
+    <select id="selectAllCourse" resultType="Course">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+               (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where !delete_state and audit_state=1 and publish_state and online
+    </select>
+
+    <!--查询课程总数-->
+    <select id="queryCount" resultType="Integer">
+        select count(*) from course where !delete_state and audit_state=1 and publish_state and online
+    </select>
+
+    <!--根据播放量查询-->
+    <select id="selectCourseByPlay" resultType="Course">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+               (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where !delete_state and publish_state and audit_state=1 and online order by play_count desc
+    </select>
+
+    <!--根据发布时间查询-->
+    <select id="selectCourseByTime" resultType="Course">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+               (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where !delete_state and publish_state and audit_state=1 and online order by put_time desc
+    </select>
+
+    <!--查询免费课程-->
+    <select id="selectCourseByFree" resultType="Course">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+               (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where !delete_state and publish_state and audit_state=1 and online and !vip_state order by play_count desc
+    </select>
+
+    <!--查询免费课程总数-->
+    <select id="queryCountByFree" resultType="Integer">
+        select count(*) from course where !delete_state and audit_state=1 and publish_state and online and !vip_state
+    </select>
+
+    <!--根据课程id查询课程-->
+    <select id="selectCourseByIds" parameterType="List" resultType="Course">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+        (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where online and
+        course_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--根据类别查询-->
+    <select id="selectCourseByType" resultType="Course" parameterType="Integer">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+               (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where !delete_state and audit_state=1 and publish_state and online and type_id=#{typeId} order by put_time desc
+    </select>
+
+    <!--根据类别查询总数-->
+    <select id="queryCountByType" resultType="Integer" parameterType="Integer">
+        select count(*) from course where  !delete_state and audit_state=1 and publish_state and online and type_id=#{typeId}
+    </select>
+
+    <!--根据课程名查询-->
+    <select id="selectCourseByName" resultType="Course" parameterType="String">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+               (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where !delete_state and publish_state and audit_state=1 and online and
+        course_name like CONCAT('%', #{courseName}, '%') order by put_time desc
+    </select>
+
+    <!--根据课程名查询总数-->
+    <select id="queryCountByName" resultType="Integer" parameterType="String">
+        select count(*) from course where !delete_state and audit_state=1 and publish_state and online and
+            course_name like CONCAT('%', #{courseName}, '%')
+    </select>
+
+    <!--根据id查询-->
+    <select id="selectCourseById" resultType="Course" parameterType="Integer">
+        select *,(select sum(time_minute) from course_list where course_list.course_id=course.course_id) as courseTime,
+               (select sum(time_second) from course_list where course_list.course_id=course.course_id) as courseSecond
+        from course where !delete_state and publish_state and audit_state=1 and online and course_id=#{courseId}
+    </select>
+
+    <!--查询所有特训班-->
+    <select id="selectAllSpecialCourse" resultType="Course">
+        select * from course where !delete_state and publish_state and audit_state=1 and !online
+    </select>
+
+    <!--查询特训班总数-->
+    <select id="selectCountSpecialCourse" resultType="Integer">
+        select count(*) from course where !delete_state and publish_state and audit_state=1 and !online
+    </select>
+
+    <!--根据课程id查询特训班-->
+    <select id="selectSpecialCourseById" parameterType="Integer" resultType="Course">
+        select * from course where course_id =#{courseId} and !delete_state and audit_state=1 and publish_state;
+    </select>
+
+    <!--修改课程信息（播放量自增）-->
+    <update id="updateCourse" parameterType="Course">
+        update course
+        <set>
+            <if test="playCount != null">play_count = #{playCount},</if>
+        </set>
+        where course_id = #{courseId};
+    </update>
+</mapper>

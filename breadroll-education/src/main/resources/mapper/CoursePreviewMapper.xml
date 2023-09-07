@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CoursePreviewMapper">
+    <!--查询所有课程预告-->
+    <select id="selectAllCourse" resultType="CoursePreview">
+        select * from course_preview where preview_state and !delete_state;
+    </select>
+
+    <!--将课程预告过期的下架-->
+    <update id="closeExpiration">
+        update course_preview set preview_state = 0 where start_time &lt;= CURDATE();
+    </update>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.UserMapper">
+    <select id="queryUserByName" parameterType="String" resultType="User">
+        select * from user where user_name = #{userName};
+    </select>
+    <select id="queryPageUser" resultType="User">
+        select * from user where delete_state=0
+    </select>
+    <select id="queryAllUser" resultType="User">
+        select * from user where delete_state=0;
+    </select>
+    <update id="updateLockState" parameterType="int">
+        update user set locked_state=not locked_state where user_id=#{userId};
+    </update>
+    <select id="searchUser" parameterType="User" resultType="User">
+        select * from user where delete_state=0
+                <if test="userId!=null">
+                    and user_id=#{userId}
+                </if>
+                <if test="userName!=null and userName!=''">
+                    and user_name like concat('%',#{userName},'%')
+                </if>
+                <if test="userGender!=null and userGender!=''">
+                    and user_gender=#{userGender}
+                </if>
+                <if test="userPhone!=null and userPhone!=''">
+                    and user_phone=#{userPhone}
+                </if>
+    </select>
+    <select id="totalSearchUser" parameterType="User" resultType="User">
+        select * from user where delete_state=0
+        <if test="userId!=null">
+            and user_id=#{userId}
+        </if>
+        <if test="userName!=null and userName!=''">
+            and user_name like concat('%',#{userName},'%')
+        </if>
+        <if test="userGender!=null and userGender!=''">
+            and user_gender=#{userGender}
+        </if>
+        <if test="userPhone!=null and userPhone!=''">
+            and user_phone=#{userPhone}
+        </if>
+    </select>
+</mapper>

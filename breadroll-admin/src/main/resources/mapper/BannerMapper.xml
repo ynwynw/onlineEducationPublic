@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.BannerMapper">
+    <select id="queryPageBanner" resultType="Banner">
+        select * from banner where delete_state=0
+    </select>
+    <select id="queryAllBanner" resultType="Banner">
+        select * from banner where delete_state=0;
+    </select>
+    <select id="queryByBannerId" parameterType="int" resultType="Banner">
+        select * from banner where banner_id=#{bannerId};
+    </select>
+    <update id="updateBannerState" parameterType="int">
+        update banner set banner_state=not banner_state where banner_id=#{bannerId};
+    </update>
+    <update id="deleteBanner" parameterType="int">
+        update banner set delete_state=1 where banner_id=#{bannerId};
+    </update>
+    <insert id="addBanner" parameterType="Banner">
+        insert into banner (course_name, course_id, banner_url) VALUES
+                    (#{courseName},#{courseId},#{bannerUrl});
+    </insert>
+    <update id="editBanner" parameterType="Banner">
+        update banner set course_name=#{courseName},course_id=#{courseId},banner_url=#{bannerUrl} where banner_id=#{bannerId};
+    </update>
+    <update id="updateBannerStateByCourseId" parameterType="int">
+        update banner set banner_state=0 where course_id=#{courseId};
+    </update>
+</mapper>

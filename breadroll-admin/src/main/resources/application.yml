@@ -1,0 +1,28 @@
+# 应用服务 WEB 访问端口
+server:
+  port: 9000
+  servlet:
+    session:
+      timeout: 259200     # 单位 秒   60*60*24*3  3天发呆时间
+    encoding:
+      charset: utf-8
+      force: true
+
+# 应用名称
+spring:
+  application:
+    name: breadroll-admin
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  profiles:
+    include: redis,mail,jdbc,thymeleaf
+
+  servlet:
+    multipart:
+      max-file-size: 1023MB
+      max-request-size: 1024MB
+  mvc:
+    static-path-pattern: /static/**

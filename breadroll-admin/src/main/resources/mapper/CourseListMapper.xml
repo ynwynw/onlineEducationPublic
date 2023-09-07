@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CourseListMapper">
+    <select id="queryAllPageDirectory" resultType="CourseList">
+        select * from course_list where delete_state=0
+    </select>
+    <insert id="addDirectory" parameterType="CourseList">
+        insert into course_list (list_name,course_id,course_name,video_url,time_minute,time_second,lock_state) values
+                  (#{listName},#{courseId},#{courseName},#{videoUrl},#{timeMinute},#{timeSecond},#{lockState});
+    </insert>
+    <update id="updateDirectory" parameterType="CourseList">
+        update course_list set list_name=#{listName},course_id=#{courseId},course_name=#{courseName},video_url=#{videoUrl},
+                               time_minute=#{timeMinute},time_second=#{timeSecond},lock_state=#{lockState} where list_id=#{listId}
+    </update>
+    <update id="deleteDirectory" parameterType="int">
+        update course_list set delete_state=1 where list_id=#{listId};
+    </update>
+    <select id="queryListById" parameterType="int" resultType="CourseList">
+        select * from course_list where list_id=#{listId}
+    </select>
+    <select id="queryAllDirectory" resultType="CourseList">
+        select * from course_list where delete_state=0;
+    </select>
+    <select id="selectDirectory" parameterType="CourseList" resultType="CourseList">
+        select * from course_list where delete_state=0
+        <if test="listId!=null">
+            and list_id=#{listId}
+        </if>
+        <if test="listName!=''">
+            and list_name like concat('%',#{listName},'%')
+        </if>
+        <if test="courseName!=''">
+            and course_name like concat('%',#{courseName},'%')
+        </if>
+    </select>
+    <select id="totalSelectDirectory" parameterType="CourseList" resultType="CourseList">
+        select * from course_list where delete_state=0
+        <if test="listId!=null">
+            and list_id=#{listId}
+        </if>
+        <if test="listName!=''">
+            and list_name=#{listName}
+        </if>
+        <if test="courseName!=''">
+            and course_name=#{courseName}
+        </if>
+    </select>
+    <select id="queryDirectoryByCourseId" parameterType="int" resultType="CourseList">
+        select * from course_list where course_id=#{courseId};
+    </select>
+    <update id="deleteCourseDirectory" parameterType="int">
+        update course_list set delete_state=1 where course_id=#{courseId};
+    </update>
+    <update id="updateCourseNameByCourseId">
+        update course_list set course_name=#{courseName} where course_id=#{courseId} and delete_state=0;
+    </update>
+    <select id="queryByCourseId" parameterType="int" resultType="CourseList">
+        select * from course_list where course_id=#{courseId} and delete_state=0;
+    </select>
+</mapper>

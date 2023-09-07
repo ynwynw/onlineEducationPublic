@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.UserVipMapper">
+    <!--通过用户Id获取-->
+    <select id="selectUserVipByUserId" parameterType="Integer" resultType="UserVip">
+        select * from user_vip where user_id=#{userId} and !delete_state;
+    </select>
+
+    <!--根据用户Id获取VIP信息-->
+    <select id="selectVipByUserId" parameterType="Integer" resultType="Vip">
+        select a.* from vip as a,user_vip as b where a.vip_id = b.vip_id and b.user_id=#{userId} and !b.delete_state
+    </select>
+
+    <!--插入会员信息-->
+    <insert id="insertUserVip" parameterType="UserVip">
+        insert into user_vip (user_id, vip_id, open_time, expire_time)
+        values (#{userId},#{vipId},#{openTime},#{expireTime});
+    </insert>
+
+    <!--修改用户信息-->
+    <update id="updateUserVip" parameterType="UserVip">
+        update user_vip
+        <set>
+            <if test="vipId != null">vip_id =#{vipId},</if>
+            <if test="expireTime != null">expire_time =#{expireTime},</if>
+            <if test="deleteState != null">delete_state =#{deleteState},</if>
+        </set>
+        where id=#{id};
+    </update>
+</mapper>

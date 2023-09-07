@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.OrderMapper">
+
+    <!--获取用户所有订单-->
+    <select id="selectOrderByUserId" parameterType="Integer" resultType="Order">
+        select * from `order` where user_id =#{userId} order by create_time desc
+    </select>
+
+    <!--获取用户订单总数-->
+    <select id="queryCountByUserId" parameterType="Integer" resultType="Integer">
+        select count(*) from `order` where user_id =#{userId}
+    </select>
+
+
+    <!--根据id获取具体订单-->
+    <select id="selectOrderById" parameterType="Integer" resultType="Order">
+        select * from `order` where order_id =#{orderId};
+    </select>
+
+    <!--添加订单-->
+    <insert id="insertOrder" parameterType="Order">
+        insert into `order` (order_no, order_name, user_id, course_id, pay_price, order_state)
+        values (#{orderNo},#{orderName},#{userId},#{courseId},#{payPrice},#{orderState});
+    </insert>
+
+
+    <!--更新订单-->
+    <update id="updateOrder" parameterType="Order">
+        update `order`
+        <set>
+            <if test="orderState != null">order_state =#{orderState},</if>
+        </set>
+        where order_id = #{orderId};
+    </update>
+
+</mapper>

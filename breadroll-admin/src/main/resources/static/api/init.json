@@ -1,0 +1,178 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/home"
+  },
+  "logoInfo": {
+    "title": "在线教育后台",
+    "image": "static/images/logo.png",
+    "href": "/#/page/home"
+  },
+  "menuInfo": [
+    {
+      "title": "人事",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "部门管理",
+          "href": "department/departmentList",
+          "icon": "fa fa-flickr",
+          "target": "_self"
+        },
+        {
+          "title": "角色管理",
+          "href": "role/jurisdictionList",
+          "icon": "fa fa-street-view",
+          "target": "_self"
+        },
+        {
+          "title": "员工管理",
+          "href": "manager/managerList",
+          "icon": "fa fa-user-plus",
+          "target": "_self"
+        },
+        {
+          "title": "用户管理",
+          "href": "user/userList",
+          "icon": "fa fa-user-md",
+          "target": "_self"
+        },{
+          "title": "讲师管理",
+          "href": "teacher/teacherList",
+          "icon": "fa fa-user",
+          "target": "_self"
+        }
+      ]
+    },
+    {
+      "title": "课程",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "课程管理",
+          "href": "",
+          "icon": "fa fa-book",
+          "target": "_self",
+          "child": [
+            {
+              "title": "课程预告",
+              "href": "preview/coursePreview",
+              "icon": "fa fa-twitch",
+              "target": "_self"
+            },
+            {
+              "title": "课程列表",
+              "href": "course/courseList",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            },
+            {
+              "title": "课程类别",
+              "href": "type/courseType",
+              "icon": "fa fa-navicon",
+              "target": "_self"
+            },
+            {
+              "title": "目录列表",
+              "href": "directory/directoryList",
+              "icon": "fa fa-sliders",
+              "target": "_self"
+            },
+            {
+              "title": "特训班管理",
+              "href": "special/specialClassList",
+              "icon": "fa fa-bank",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "资料管理",
+          "href": "resource/resourceAdmin",
+          "icon": "fa fa-file-text-o",
+          "target": "_self"
+        },
+        {
+          "title": "锦囊管理",
+          "href": "article/articleAdmin",
+          "icon": "fa fa-stack-overflow",
+          "target": "_self"
+        }
+      ]
+    },
+    {
+      "title": "营销",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "数据分析",
+          "href": "data/analysis",
+          "icon": "fa fa-bar-chart",
+          "target": "_self"
+        },
+        {
+          "title": "公告管理",
+          "href": "message/publicAdmin",
+          "icon": "fa fa-comment-o",
+          "target": "_self"
+        },
+        {
+          "title": "VIP管理",
+          "href": "vip/vipAdmin",
+          "icon": "fa fa-skyatlas",
+          "target": "_self"
+        },
+        {
+          "title": "轮播图管理",
+          "href": "banner/bannerAdmin",
+          "icon": "fa fa-camera-retro",
+          "target": "_self"
+        },
+        {
+          "title": "订单管理",
+          "href": "orderInfo/orderAdmin",
+          "icon": "layui-icon layui-icon-rmb",
+          "target": "_self"
+        }
+      ]
+    },
+    {
+      "title": "审核",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "课程审核",
+          "href": "courseAudit",
+          "icon": "fa fa-sort-amount-asc",
+          "target": "_self"
+        },
+        {
+          "title": "文章审核",
+          "href": "articleAudit",
+          "icon": "fa fa-leanpub",
+          "target": "_self"
+        },
+        {
+          "title": "资料审核",
+          "href": "resourceAudit",
+          "icon": "fa fa-file-word-o",
+          "target": "_self"
+        },
+        {
+          "title": "特训班审核",
+          "href": "specialAudit",
+          "icon": "fa fa-rebel",
+          "target": "_self"
+        }
+      ]
+    }
+  ]
+}

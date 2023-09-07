@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CoursePreviewMapper">
+    <select id="pageCoursePreview" resultType="CoursePreview">
+        select * from course_preview where delete_state=0
+    </select>
+    <select id="totalCoursePreview" resultType="CoursePreview">
+        select * from course_preview where delete_state=0;
+    </select>
+    <select id="queryCoursePreviewById" parameterType="int" resultType="CoursePreview">
+        select * from course_preview where preview_id=#{previewId};
+    </select>
+    <select id="searchCoursePreview" parameterType="CoursePreview" resultType="CoursePreview">
+        select * from course_preview where delete_state=0
+                    <if test="courseName!=null and courseName!=''">
+                        and course_name like concat('%',#{courseName},'%')
+                    </if>
+                    <if test="startTime!=null">
+                        and datediff(start_time,#{startTime})=0
+                    </if>
+    </select>
+    <select id="totalSearchCoursePreview" parameterType="CoursePreview" resultType="CoursePreview">
+        select * from course_preview where delete_state=0
+        <if test="courseName!=null and courseName!=''">
+            and course_name like concat('%',#{courseName},'%')
+        </if>
+        <if test="startTime!=null">
+            and datediff(start_time,#{startTime})=0
+        </if>
+    </select>
+    <insert id="addCoursePreview" parameterType="CoursePreview">
+        insert into course_preview (course_name, description, start_time, time_length, teacher_id, teacher_name, teacher_des) VALUES
+                                (#{courseName},#{description},#{startTime},#{timeLength},#{teacherId},#{teacherName},#{teacherDes});
+    </insert>
+    <update id="updateCoursePreview" parameterType="CoursePreview">
+        update course_preview set course_name=#{courseName},description=#{description},start_time=#{startTime},time_length=#{timeLength},
+                                  teacher_id=#{teacherId},teacher_name=#{teacherName},teacher_des=#{teacherDes} where preview_id=#{previewId};
+    </update>
+    <update id="updatePreviewState" parameterType="int">
+        update course_preview set preview_state=not preview_state where preview_id=#{previewId};
+    </update>
+    <update id="deleteCoursePreview" parameterType="int">
+        update course_preview set delete_state=1 where preview_id=#{previewId};
+    </update>
+    <update id="OFFCoursePreview" parameterType="int">
+        update course_preview set preview_state=0 where preview_id=#{previewId};
+    </update>
+</mapper>

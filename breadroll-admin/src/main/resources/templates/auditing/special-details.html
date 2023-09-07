@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>特训班详情</title>
+    <base href="/">
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+    <script src="/static/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+</head>
+<style>
+    #operate{
+        display: none;
+        margin-left: 110px;
+    }
+    .header{
+        position: relative;
+    }
+    .title{
+        margin-bottom: 16px;
+    }
+    .desc{
+        position: absolute;
+        top: 35px;
+        left: 75px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-all;
+        text-overflow: ellipsis;
+    }
+</style>
+<body>
+<div class="layui-form">
+    <input type="hidden" id="courseId" name="courseId"/>
+    <div class="teacher-data" style="margin-left: 42px">
+        <h2 class="title">授课讲师</h2>
+        <div class="layui-form-item">
+            <div class="header">
+                <img style="height: 60px;width: 60px;margin-right: 15px;border-radius: 50%" class="avatar" th:src="${teacher.avatarUrl}" alt="讲师头像">
+                <span style="font-size: 18px;color: #000000;position: absolute;top: 5px" th:text="${teacher.teacherName}"></span>
+                <p class="desc" th:text="${teacher.description}"></p>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div lay-filter="myDiv">
+            <label class="layui-form-label">课程名称</label>
+            <div class="layui-input-block">
+                <input id="courseName"  name="courseName" readonly="readonly" lay-verify="required" type="text" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item" lay-filter="myDiv">
+        <div lay-filter="myDiv">
+            <label class="layui-form-label">课程类别</label>
+            <div class="layui-input-block">
+                <input id="courseType"  name="courseType" readonly="readonly" lay-verify="required" type="text" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div lay-filter="myDiv" style="margin-bottom: 15px;">
+        <label class="layui-form-label">课程价格</label>
+        <div class="layui-input-block">
+            <input id="price"  name="price" readonly="readonly" lay-verify="required" type="text" class="layui-input">
+        </div>
+    </div>
+    <div lay-filter="myDiv" style="margin-bottom: 15px;">
+        <label class="layui-form-label">预计时长</label>
+        <div class="layui-input-block">
+            <input id="courseTime"  readonly="readonly" title="单位：小时" name="courseTime" lay-verify="required" type="text" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">课程简介</label>
+        <div class="layui-input-block">
+            <textarea id="description" readonly name="description" class="layui-textarea" lay-verify="required" cols="162" rows="6"></textarea>
+        </div>
+    </div>
+    <div style="margin-top: 50px" id="operate" class="operate">
+        <button id="pass" type="button" class="layui-btn layui-btn-normal">审核通过</button>
+        <button id="refuse" type="button" class="layui-btn layui-btn-danger">审核拒绝</button>
+    </div>
+</div>
+</body>
+<script th:inline="javascript" type="text/javascript">
+    $(function (){
+        let course=[[${course}]];
+        let auditState=[[${auditState}]]
+        if (auditState===0){
+            $('#operate').css("display","inline");
+        }
+
+        $('#courseId').val(course.courseId);
+        $('#courseName').val(course.courseName);
+        $('#courseType').val(course.typeName);
+        $('#price').val(course.price);
+        $('#courseTime').val(course.courseTime);
+        $('#description').val(course.description);
+
+        $('#pass').click(function (){
+            layer.open({
+                type: 2,
+                shade: 0.7,
+                title: '审核通过',
+                area: ['650px', '400px'], //宽高
+                content: "/auditCause/goToPassAudit?auditType='specialAudit'&auditId="+course.courseId
+            });
+        });
+        $('#refuse').click(function (){
+            layer.open({
+                type: 2,
+                shade: 0.7,
+                title: '审核拒绝',
+                area: ['650px', '400px'], //宽高
+                content: "/auditCause/goToRefuseAudit?auditType='specialAudit'&auditId="+course.courseId
+            });
+        })
+    })
+</script>
+</html>

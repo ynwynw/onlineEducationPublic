@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.TeacherMapper">
+    <select id="queryAllTeacher" resultType="Teacher">
+        select * from teacher where delete_state=0
+    </select>
+    <select id="totalTeacher" resultType="Teacher">
+        select * from teacher where delete_state=0
+    </select>
+    <insert id="addTeacher" parameterType="Teacher">
+        insert into teacher (teacher_name,description,avatar_url,teacher_gender,teacher_phone,id_card,entry_time) values
+                    (#{teacherName},#{description},#{avatarUrl},#{teacherGender},#{teacherPhone},#{idCard},#{entryTime});
+    </insert>
+    <update id="updateTeacher" parameterType="Teacher">
+        update teacher set teacher_name=#{teacherName},description=#{description},avatar_url=#{avatarUrl},teacher_gender=#{teacherGender},teacher_phone=#{teacherPhone},id_card=#{idCard}
+                                where teacher_id=#{teacherId};
+    </update>
+    <select id="queryTeacherByPhone" parameterType="Teacher" resultType="Teacher">
+        select * from teacher where teacher_phone=#{teacherPhone} and delete_state=0
+    </select>
+    <select id="queryTeacherByIdCard" parameterType="Teacher" resultType="Teacher">
+        select * from teacher where id_card=#{idCard} and delete_state=0
+    </select>
+    <select id="queryExceptByPhone" resultType="Teacher">
+        select * from teacher where teacher_id!=#{teacherId} and teacher_Phone=#{teacherPhone} and delete_state=0
+    </select>
+    <select id="queryExceptByIdCard" resultType="Teacher">
+        select * from teacher where teacher_id!=#{teacherId} and id_card=#{idCard} and delete_state=0
+    </select>
+    <update id="deleteTeacher" parameterType="int">
+        update teacher set delete_state=1 where teacher_id=#{teacherId};
+    </update>
+    <select id="queryTeacher" parameterType="Teacher" resultType="Teacher">
+        select * from teacher where delete_state=0
+
+                <if test="teacherId!=null">
+                    and teacher_id=#{teacherId}
+                </if>
+                <if test="teacherName!=null and teacherName!=''">
+                    and teacher_name like concat('%',#{teacherName},'%')
+                </if>
+                <if test="teacherGender!=null and teacherGender!=''">
+                    and teacher_gender=#{teacherGender}
+                </if>
+
+    </select>
+    <select id="totalQueryTeacher" parameterType="Teacher" resultType="Teacher">
+        select * from teacher where delete_state=0
+
+        <if test="teacherId!=null">
+            and teacher_id=#{teacherId}
+        </if>
+        <if test="teacherName!=null and teacherName!=''">
+            and teacher_name like concat('%',#{teacherName},'%')
+        </if>
+        <if test="teacherGender!=null and teacherGender!=''">
+            and teacher_gender=#{teacherGender}
+        </if>
+
+    </select>
+    <select id="queryAllOnlineTeacher" resultType="Teacher">
+        select * from teacher where delete_state=0 and teacher_state=1;
+    </select>
+    <update id="updateTeacherState" parameterType="int">
+        update teacher set teacher_state= not teacher_state where teacher_id=#{teacherId};
+    </update>
+    <select id="queryTeacherById" parameterType="int" resultType="Teacher">
+        select * from teacher where delete_state=0 and teacher_id=#{teacherId};
+    </select>
+</mapper>

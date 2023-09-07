@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CoachApplyMapper">
+    <!--根据用户id获取特训班报名信息-->
+    <select id="selectCoachApplyByUserId" parameterType="Integer" resultType="CoachApply">
+        select * from coach_apply where user_id=#{userId} and !delete_state order by coach_time desc
+    </select>
+
+    <!--获取用户报名信息总数-->
+    <select id="queryCountByUserId" parameterType="Integer" resultType="Integer">
+        select count(*) from coach_apply where user_id=#{userId} and !delete_state;
+    </select>
+
+    <!--根据用户id和课程id获取-->
+    <select id="selectOnlyCoachApply" resultType="CoachApply" parameterType="Integer">
+        select * from coach_apply where user_id=#{userId} and course_id=#{courseId} and !delete_state
+    </select>
+
+    <!--根据课程id获取课程信息-->
+    <select id="selectCoachApplyById" parameterType="Integer" resultType="CoachApply">
+        select * from coach_apply where coach_id=#{coachId} and !delete_state;
+    </select>
+
+    <!--添加报名信息-->
+    <insert id="insertCoachApply" parameterType="CoachApply">
+        insert into coach_apply (course_id, course_name,start_time, user_id, user_name, user_phone, user_email)
+        values (#{courseId},#{courseName},#{startTime},#{userId},#{userName},#{userPhone},#{userEmail});
+    </insert>
+
+    <!--修改报名信息-->
+    <update id="updateCoachApply" parameterType="CoachApply">
+        update coach_apply
+        <set>
+            <if test="applyState != null">apply_state =#{applyState},</if>
+            <if test="deleteState != null">delete_state =#{deleteState},</if>
+        </set>
+        where coach_id =#{coachId};
+    </update>
+
+    <!--将已开课的报名信息 报名状态修改为4 （已开课）-->
+    <update id="startedClasses">
+        update coach_apply set apply_state = 4 where start_time &lt;= CURDATE();
+    </update>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.VipMapper">
+    <select id="queryPageVip" resultType="Vip">
+        select * from vip where delete_state=0
+    </select>
+    <select id="queryAllVip" resultType="Vip">
+        select * from vip where delete_state=0;
+    </select>
+    <select id="queryByVipId" parameterType="int" resultType="Vip">
+        select * from vip where vip_id=#{vipId};
+    </select>
+    <insert id="addVip" parameterType="Vip">
+        insert into vip (vip_name, vip_mark, vip_icon,time_length, price, bread_coin) VALUES
+                    (#{vipName},#{vipMark},#{vipIcon},#{timeLength},#{price},#{breadCoin});
+    </insert>
+    <update id="updateVip" parameterType="Vip">
+        update vip set vip_name=#{vipName},vip_mark=#{vipMark},time_length=#{timeLength},vip_icon=#{vipIcon},
+                       price=#{price},bread_coin=#{breadCoin} where vip_id=#{vipId};
+    </update>
+    <update id="updateVipState" parameterType="int">
+        update vip set vip_state=not vip_state where vip_id=#{vipId};
+    </update>
+    <update id="deleteVip" parameterType="int">
+        update vip set delete_state=1 where vip_id=#{vipId};
+    </update>
+    <select id="countVIPUser" resultType="DataModel">
+        select ( select COUNT(id)  from user_vip )as VIPUserCount,
+              IFNULL((select SUM(pay_price)  from `order` where to_days(create_time)=to_days(now()) AND order_name like '%会员'),0)as VIPTodayProfit,
+               IFNULL((select sum(pay_price) from `order` where to_days(create_time)=to_days(now()) and order_name not like '%会员'),0)as coachTodayProfit,
+               IFNULL((select sum(pay_price) from `order`),0) as totalProfit;
+    </select>
+</mapper>

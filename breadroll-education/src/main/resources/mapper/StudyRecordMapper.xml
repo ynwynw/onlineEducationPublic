@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.StudyRecordMapper">
+    <select id="selectRecordByUserId" parameterType="Integer" resultType="StudyRecord">
+        select * from study_record where user_id =#{userId} and !delete_state order by update_time desc
+    </select>
+
+    <!--判断学习记录是否存在-->
+    <select id="selectRecordExist" parameterType="Integer" resultType="Boolean">
+        select count(*) from study_record where user_id=#{userId} and course_id=#{courseId}
+    </select>
+
+    <!--查询总数-->
+    <select id="queryCount" parameterType="Integer" resultType="Integer">
+        select count(*) from study_record where user_id=#{userId} and !delete_state
+    </select>
+
+    <insert id="insertRecord" parameterType="StudyRecord">
+        insert into study_record (user_id, course_id, delete_state)
+        values (#{userId}, #{courseId}, #{deleteState});
+    </insert>
+
+    <update id="updateRecord" parameterType="StudyRecord">
+        update study_record
+        <set>
+            <if test="deleteState != null">delete_state = #{deleteState},</if>
+            <if test="updateTime != null">update_time= #{updateTime},</if>
+        </set>
+        where user_id =#{userId} and course_id =#{courseId};
+    </update>
+
+    <!--清除用户全部学习记录-->
+    <update id="clearAllRecord" parameterType="Integer">
+        update study_record set delete_state = true where user_id =#{userId};
+    </update>
+
+</mapper>

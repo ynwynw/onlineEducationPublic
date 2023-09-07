@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>课程预告</title>
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+    <script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div id="searchForm" style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">课程名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="courseName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">开课时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="startTime" name="startTime" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="search"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal data-add-btn" lay-event="add"> 发布 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="previewState">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="previewState" value="{{d.previewState}}" lay-skin="switch" lay-text="启用|禁用" lay-event="previewState" {{ d.previewState ? 'checked' : '' }}>
+        </script>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-sm data-count-edit" lay-event="edit">编辑信息</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="delete">删除预告</a>
+        </script>
+    </div>
+</div>
+</body>
+<script th:inline="none">
+    let myTable;
+    layui.use(['form', 'table','laydate'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            laydate = layui.laydate;
+
+        //常规用法
+        laydate.render({
+            elem: '#startTime'
+        });
+
+        myTable = table.render({
+            elem: '#currentTableId',
+            url: '/preview/pageCoursePreview',
+            method: "get",
+            toolbar: '#toolbarDemo',
+            parseData: function (res) {
+                return {
+                    "code": 0,
+                    "msg": res.message,
+                    "count": res.data.total,
+                    "data": res.data.list
+                }
+            },
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {field: 'previewId', width: "8%", title: '预告编号', sort: true, align: "center"},
+                {field: 'courseName', width: "12%", title: '课程名称', align: "center"},
+                {field: 'description', width: "25%", title: '课程介绍', align: "center"},
+                {field: 'teacherName', width: "10%", title: '讲师姓名',sort: true, align: "center"},
+                {field: 'startTime',width:"12%",title: '开课时间', sort: true, align: "center"},
+                {field: 'timeLength',width: "8%",title: '预计时长(小时)', align: "center"},
+                {field: 'previewState', width: "8%", title: '预告状态',templet: '#previewState',event:"previewState", unresize: true, align: "center"},
+                {title: '操作', toolbar: '#currentTableBar', align: "center"}
+            ]],
+            page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10
+                , limits: [10, 15, 30, 60]
+                , groups: 5 //只显示 1 个连续页码
+                , first: true //不显示首页
+                , last: true //不显示尾页
+            },
+            request: {
+                pageName: "pageNum",
+                limitName: "pageSize"
+            },
+            done:function (){
+                $("table").css("width","100%");
+            }
+        });
+        layui.table.render(); //重新渲染显示效果
+
+        //搜索
+        form.on('submit(search)', function(data){
+            console.log("搜索");
+            myTable.reload({
+                url:"/preview/searchCoursePreview",
+                method: "post",
+                page: {
+                    curr: 1 //设定初始在第 5 页
+                    ,limit: 10
+                },
+                request:{
+                    pageName:"pageNum",
+                    limitName: "pageSize"
+                },
+                where:{
+                    courseName:data.field.courseName,
+                    startTime:data.field.startTime
+                },
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                let index = layer.open({
+                    title: '发布课程预告',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/preview/goToAddEditPreview?previewId=0'
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                let checkStatus = table.checkStatus('currentTableId'),
+                    data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data = obj.data;
+            //编辑数据
+            if (obj.event === 'edit') {
+                let index = layer.open({
+                    title: '编辑课程预告',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/preview/goToAddEditPreview?previewId='+data.previewId
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+                //删除数据
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除 "' + data.courseName + '"  课程预告吗？',{icon:3}, function (index) {
+                    $.ajax({
+                        type: "get",
+                        url: '/preview/deleteCoursePreview',
+                        data: {previewId:data.previewId},
+                        success: function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+
+                            } else {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+                            }
+                        },
+                        error: function (error) {
+                            layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                        }
+                    })
+                    obj.del();
+                    layer.close(index);
+                });
+            }else if(obj.event === 'previewState'){
+                $.ajax({
+                    type: "get",
+                    url: '/preview/updatePreviewState',
+                    data: {previewId: data.previewId},
+                    success: function (res) {
+                        if(res.code=== 200 ){
+                            if(!data.previewState){
+                                layer.msg("课程预告《"+data.courseName+"》已发布");
+                            }else{
+                                layer.msg("课程预告《"+data.courseName+"》已关闭");
+                            }
+                        }else{
+                            layer.msg(res.message);
+                        }
+
+                        myTable.reload({
+                            url:"/preview/pageCoursePreview",
+                            method: "get",
+                            page: {
+                                curr: 1 //设定初始在第 5 页
+                                ,limit: 10
+                            },
+                            request:{
+                                pageName:"pageNum",
+                                limitName: "pageSize"
+                            }
+                        })
+                    },
+                    error: function (error) {
+                        layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                    }
+                })
+                layui.table.render(); //重新渲染显示效果
+            }
+        });
+    });
+</script>
+</html>

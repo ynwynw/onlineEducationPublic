@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.ResourceAuditMapper">
+    <select id="pageResourceAudit" resultType="ResourceAudit">
+        select * from resource_audit where delete_state=0 order by audit_state, audit_time desc
+    </select>
+    <select id="totalResourceAudit" resultType="ResourceAudit">
+        select * from resource_audit where delete_state=0;
+    </select>
+    <insert id="addResourceAudit" parameterType="ResourceAudit">
+        insert into resource_audit (resource_id, resource_name, publisher_id, publisher) values
+                (#{resourceId},#{resourceName},#{publisherId},#{publisher});
+    </insert>
+    <update id="updateResourceAudit" >
+        update resource_audit set audit_state=#{auditState} where resource_id=#{resourceId} and audit_state!=3;
+    </update>
+    <select id="searchAudit" parameterType="ResourceAudit" resultType="ResourceAudit">
+        select * from resource_audit where delete_state=0
+                <if test="resourceName!=null and resourceName!=''">
+                    and resource_name like concat('%',#{resourceName},'%')
+                </if>
+        order by audit_state, audit_time desc
+    </select>
+    <select id="totalSearchAudit" parameterType="ResourceAudit" resultType="ResourceAudit">
+        select * from resource_audit where delete_state=0
+        <if test="resourceName!=null and resourceName!=''">
+            and resource_name like concat('%',#{resourceName},'%')
+        </if>
+    </select>
+    <update id="addResourceAuditRemark" parameterType="ResourceAudit">
+        update resource_audit set reviewer_id=#{reviewerId},reviewer=#{reviewer},remark=#{remark},audit_state=#{auditState},audit_time=#{auditTime} where resource_id=#{resourceId} and audit_state=0;
+    </update>
+    <select id="queryRefuseCause" parameterType="int" resultType="String">
+        select remark from resource_audit where resource_id=#{resourceId} and audit_state=2;
+    </select>
+</mapper>

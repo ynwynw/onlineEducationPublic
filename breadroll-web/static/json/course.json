@@ -1,0 +1,58 @@
+{
+  "data": [
+    {
+      "courseId": 1,
+      "courseName": "2021年一建公里实务精选班",
+      "courseTime": "1.4",
+      "playCount":5,
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "coverUrl": "https://imgs.wanmen.org/f143668e77b39dafd15ffa9c9e61853e.png?imageView2/0/format/jpg/q/70",
+      "vipState": false
+    },
+    {
+      "courseId": 2,
+      "courseName": "高效人士的Excel必修课",
+      "courseTime": "3.6",
+      "playCount":1500,
+      "description": "快速掌握Excel技能，培养职场高效习惯，提升个人能力。",
+      "coverUrl": "https://imgs.wanmen.org/9560f109a35b45bf902c270571106eb2.png",
+      "vipState": true
+    },
+    {
+      "courseId": 3,
+      "courseName": "2021年一注技术作图",
+      "courseTime": "53.3",
+      "playCount":800,
+      "description": "2021一级注册建筑师技术作图科目考点系统讲解，助考生高效备考顺利过关！",
+      "coverUrl": "https://imgs.wanmen.org/184cc569434d4d27ae788a2c5fcd65f1.png",
+      "vipState": true
+    },
+    {
+      "courseId": 4,
+      "courseName": "MySQL零基础特训班",
+      "courseTime": "30.3",
+      "playCount":1500,
+      "description": "学习MySQL数据库，帮助点亮SQL技能，为职业发展添砖加瓦。",
+      "coverUrl": "https://imgs.wanmen.org/faad4bd6232a3c71e451230363bb0c21.png",
+      "vipState": false
+    },
+    {
+      "courseId": 5,
+      "courseName": "数据结构与算法-Python语言基础",
+      "courseTime": "11.4",
+      "playCount":1500,
+      "description": "详细讲解基本语法、变量、基本数据结构等，带你掌握Python语言基础。",
+      "coverUrl": "https://imgs.wanmen.org/941c7bafdb9cdcff3a8663e48a33e1cc.png",
+      "vipState": true
+    },
+    {
+      "courseId": 6,
+      "courseName": "Redis从入门到实战",
+      "courseTime": "11.4",
+      "playCount":1500,
+      "description": "通过基础+实战的项目式代入讲解，帮助学员快速入门Redis，理解原理，积累实战经验。",
+      "coverUrl": "https://imgs.wanmen.org/bf9e2edd5b34322d82684bfbc8eb0158.png",
+      "vipState": true
+    }
+  ]
+}

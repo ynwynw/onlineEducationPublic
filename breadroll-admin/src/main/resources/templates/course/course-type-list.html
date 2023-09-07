@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>课程类别</title>
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div id="searchForm" style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">课程类别</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="typeName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="search"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal data-add-btn" lay-event="add"> 添加 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-sm data-count-edit" lay-event="edit">编辑信息</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="delete">删除类别</a>
+        </script>
+        <script type="text/html" id="typeState">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="typeState" value="{{d.typeState}}" lay-skin="switch" lay-text="启用|禁用" lay-event="typeState" {{ d.typeState ? 'checked' : '' }}>
+        </script>
+    </div>
+</div>
+<script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script th:inline="none">
+    let myTable;
+    layui.use(['form', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        myTable=table.render({
+            elem: '#currentTableId',
+            url: '/type/allType',
+            method:"get",
+            toolbar: '#toolbarDemo',
+            parseData:function (res){
+                return{
+                    "code":0,
+                    "msg":res.message,
+                    "count":res.data.total,
+                    "data":res.data.list
+                }
+            },
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {field: 'typeId', width: "8%", title: '类别编号', sort: true,align: "center"},
+                {field: 'typeName', width: "20%", title: '类别名称',align: "center"},
+                {field: 'description', width: "35%", title: '类别描述',align: "center"},
+                {field: 'typeState',width:"15%",title: "是否启用", sort: true,templet:'#typeState',event:"typeState", unresize: true,align: "center"},
+                {title: '操作', toolbar: '#currentTableBar',align: "center"}
+            ]],
+            page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                ,curr: 1 //设定初始在第 5 页
+                ,limit: 10
+                ,limits: [1,10,15,30]
+                ,groups: 5 //只显示 1 个连续页码
+                ,first: true //不显示首页
+                ,last: true //不显示尾页
+            },
+            request:{
+                pageName:"pageNum",
+                limitName: "pageSize"
+            },
+            done:function (){
+                $("table").css("width","100%");
+            }
+        });
+
+        // 监听搜索操作
+        form.on('submit(search)', function (data) {
+            console.log("搜索");
+            myTable.reload({
+                url:"/type/selCourseType",
+                method: "post",
+                page: {
+                    curr: 1 //设定初始在第 5 页
+                    ,limit: 10
+                },
+                request:{
+                    pageName:"pageNum",
+                    limitName: "pageSize"
+                },
+                where:{
+                    typeName:data.field.typeName,
+                },
+            });
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                let index = layer.open({
+                    title: '添加类别',
+                    type: 2,
+                    shade: 0.1,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['600px', '400px'],
+                    content: '/type/goToCourseType?typeId=0'
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                let checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data=obj.data;
+            if (obj.event === 'edit') {
+                let index = layer.open({
+                    title: '编辑类别',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['600px', '400px'],
+                    content: '/type/goToCourseType?typeId='+data.typeId
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除《'+data.typeName+'》类别吗',{icon:3}, function (index) {
+                    $.ajax({
+                        type: "get",
+                        url: '/type/delType',
+                        data: {typeId: data.typeId},
+                        success: function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+
+                            } else {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+                            }
+                        },
+                        error: function (error) {
+                            layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                        }
+                    })
+                    obj.del();
+                    layer.close(index);
+                });
+            }else if (obj.event === 'typeState') {
+
+                $.ajax({
+                    type: "get",
+                    url: '/type/updateTypeState',
+                    data: {typeId: data.typeId},
+                    success: function () {
+                        if(!data.typeState){
+                            layer.msg(data.typeName+"已启用");
+                        }else{
+                            layer.msg(data.typeName+"已禁用");
+                        }
+                        myTable.reload({
+                            url:"/type/allType",
+                            method: "get",
+                            page: {
+                                curr: 1 //设定初始在第 5 页
+                                ,limit: 10
+                            },
+                            request:{
+                                pageName:"pageNum",
+                                limitName: "pageSize"
+                            }
+                        })
+                    },
+                    error: function (error) {
+                        layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                    }
+                })
+                layui.table.render(); //重新渲染显示效果
+            }
+        });
+    });
+</script>
+</body>
+</html>

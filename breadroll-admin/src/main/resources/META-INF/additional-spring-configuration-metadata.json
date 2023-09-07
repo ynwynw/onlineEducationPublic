@@ -1,0 +1,43 @@
+{
+  "properties": [
+    {
+      "name": "spring.mail.from",
+      "type": "java.lang.String",
+      "description": "Description for spring.mail.from."
+    },
+    {
+      "name": "spring.mail.nickname",
+      "type": "java.lang.String",
+      "description": "发送邮箱的名称."
+    },
+    {
+      "name": "sms.aliyun.accessKeyID",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.accessKeyID."
+    },
+    {
+      "name": "sms.aliyun.accessKeySecret",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.accessKeySecret."
+    },
+    {
+      "name": "sms.aliyun.domain",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.domain."
+    },
+    {
+      "name": "sms.aliyun.regionId",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.regionId."
+    },
+    {
+      "name": "sms.aliyun.templateCode",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.templateCode."
+    },
+    {
+      "name": "sms.aliyun.signName",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.signName."
+    }
+  ] }

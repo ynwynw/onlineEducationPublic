@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.ResourceListMapper">
+    <!--查询所有学习资源-->
+    <select id="selectAllResource" resultType="ResourceList">
+        select * from resource_list where !delete_state and audit_state=1 and publish_state
+    </select>
+
+    <!--查询学习资源总数-->
+    <select id="queryCount" resultType="Integer">
+        select count(*) from resource_list where !delete_state and audit_state=1 and publish_state;
+    </select>
+
+    <!--根据学习资源名字查询-->
+    <select id="selectAllResourceByName" resultType="ResourceList" parameterType="String">
+        select * from resource_list where resource_name like CONCAT('%', #{resourceName}, '%') and audit_state=1 and !delete_state and publish_state
+    </select>
+
+    <!--根据学习资源名字查询总数-->
+    <select id="queryCountByName" resultType="Integer" parameterType="String">
+        select count(*) from resource_list where resource_name like CONCAT('%', #{resourceName}, '%') and audit_state=1 and !delete_state and publish_state;
+    </select>
+
+    <!--根据资源id查询-->
+    <select id="selectResourceById" resultType="ResourceList" parameterType="Integer">
+        select * from resource_list where resource_id =#{resourceId} and audit_state=1 and !delete_state;
+    </select>
+</mapper>

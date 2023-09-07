@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>资料管理</title>
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+    <script src="/static/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+</head>
+<style>
+    #refuse:hover{
+        cursor: pointer;
+    }
+</style>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资料ID</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="resourceId" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">资料名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="resourceName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="search"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal data-add-btn" lay-event="add"> 添加 </button>
+            </div>
+        </script>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-sm layui-btn-primary" lay-event="lookInfo">查看资料</a>
+            {{# if(!d.publishState){}}
+            <a class="layui-btn layui-btn-sm layui-btn-warm" lay-event="publishState">发布资料</a>
+            {{#}else{}}
+            <a class="layui-btn layui-btn-sm" lay-event="publishState">关闭资料</a>
+            {{#}}}
+            <a class="layui-btn layui-btn-normal layui-btn-sm data-count-edit" lay-event="edit">编辑信息</a>
+            <a class="layui-btn layui-btn-danger layui-btn-sm data-count-delete" lay-event="delete">删除资料</a>
+        </script>
+        <script type="text/html" id="publishState">
+            {{# if(d.publishState){}}
+            <span style="color:green;">已发布</span>
+            {{#}else{}}
+            <span style="color: red">未发布</span>
+            {{#}}}
+        </script>
+        <script type="text/html" id="auditState">
+            {{# if(d.auditState===-1){ }}
+            <span>--</span>
+            {{# }else if(d.auditState===0){ }}
+            <span style="color: black">待审核</span>
+            {{# }else if(d.auditState===1){ }}
+            <span style="color:green;">已通过</span>
+            {{# }else if(d.auditState===2){ }}
+            <span id="refuse" lay-event="refuse" style="color:red;">已拒绝</span>
+            {{# }  }}
+        </script>
+    </div>
+</div>
+<script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script th:inline="none">
+    let myTable;
+    layui.use(['form', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        myTable = table.render({
+            elem: '#currentTableId',
+            url: '/resource/pageList',
+            method: "get",
+            toolbar: '#toolbarDemo',
+            parseData: function (res) {
+                return {
+                    "code": 0,
+                    "msg": res.message,
+                    "count": res.data.total,
+                    "data": res.data.list
+                }
+            },
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {field: 'resourceId', width: "8%", title: '资料编号', sort: true, align: "center"},
+                {field: 'resourceName', width: "20%", title: '资料名称', align: "center"},
+                {field: 'breadCoin', width: "8%", title: '所需花卷币', align: "center"},
+                {field: 'fileSize', width: "10%", title: '文件大小', align: "center"},
+                {field: 'uploader', width: "10%",title: '上传人', align: "center"},
+                {field: 'remark', width: "10%",title: "备注",hide:true, align: "center"},
+                {field: 'publishState', width: "8%", title: '发布状态',templet: '#publishState', align: "center"},
+                {field: 'auditState',title: '审核状态',width: "8%",templet:'#auditState', align: "center"},
+                {field:'publishState', title: '操作', toolbar: '#currentTableBar', align: "center"}
+
+            ]],
+            page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , curr: 1 //设定初始在第 1 页
+                , limit: 10
+                , limits: [10, 15, 30, 60]
+                , groups: 5 //只显示 1 个连续页码
+                , first: true //不显示首页
+                , last: true //不显示尾页
+            },
+            request: {
+                pageName: "pageNum",
+                limitName: "pageSize"
+            },
+            done:function (){
+                $("table").css("width","100%");
+            }
+        });
+
+        //搜索
+        form.on('submit(search)', function (data) {
+            console.log("搜索");
+            myTable.reload({
+                url: "/resource/searchResource",
+                method: "post",
+                page: {
+                    curr: 1 //设定初始在第 5 页
+                    , limit: 10
+                },
+                request: {
+                    pageName: "pageNum",
+                    limitName: "pageSize"
+                },
+                where: {
+                    resourceId: data.field.resourceId,
+                    resourceName: data.field.resourceName,
+                },
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                let index = layer.open({
+                    title: '添加课程',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/resource/goToEditResource?resourceId=0'
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                let checkStatus = table.checkStatus('currentTableId'),
+                    data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data = obj.data;
+            //编辑数据
+            if (obj.event === 'edit') {
+                if(data.auditState!==-1){
+                    layer.msg("此课程已发布，不能编辑", {time: 5000, icon: 1, offset: [15]});
+                    return false;
+                }
+                let index = layer.open({
+                    title: '编辑资料',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/resource/goToEditResource?resourceId=0' + data.resourceId
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+                //删除数据
+            }else if(obj.event==='lookInfo'){
+                let layer = layui.layer;
+                layer.open({
+                    type: 2,
+                    area: ['100%', '100%'],
+                    fixed: false, //不固定
+                    maxmin: true,
+                    content: '/upload/'+data.fileUrl
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除 ' + data.resourceName + ' 么', function (index) {
+                    if(data.auditState!==-1){
+                        layer.msg("此课程已发布，不能删除", {time: 5000, icon: 1, offset: [15]});
+                        return false;
+                    }
+                    $.ajax({
+                        type: "get",
+                        url: '/resource/delResource',
+                        data: {resourceId: data.resourceId},
+                        success: function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+
+                            } else {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+                            }
+                        },
+                        error: function (error) {
+                            layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                        }
+                    })
+                    obj.del();
+                    layer.close(index);
+                });
+            }else if (obj.event === 'publishState') {
+                let msg;
+                if (data.publishState){
+                    msg="关闭";
+                }else{
+                    msg="发布"
+                }
+                layer.confirm('确认要'+msg+'此资料吗', function (index) {
+                    $.ajax({
+                        type: "get",
+                        url: '/resource/updatePublishState',
+                        data: {resourceId: data.resourceId},
+                        success: function (res) {
+                            if (!data.publishState) {
+                                layer.msg("《"+data.resourceName + "》已发布");
+                            } else {
+                                layer.msg("《"+data.resourceName + "》已被关闭");
+                            }
+                            myTable.reload({
+                                url: "/resource/pageList",
+                                method: "get",
+                                page: {
+                                    curr: 1 //设定初始在第 5 页
+                                    , limit: 10
+                                },
+                                request: {
+                                    pageName: "pageNum",
+                                    limitName: "pageSize"
+                                }
+                            })
+                        },
+                        error: function (error) {
+                            layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                        }
+                    })
+                });
+            }else if(obj.event==='refuse'){
+                $.ajax({
+                    type: "post",
+                    url: '/resource/refuseCause',
+                    data: {resourceId: data.resourceId},
+                    success: function (res) {
+                        layer.alert(res.message);
+                    }
+                })
+            }
+        });
+    });
+</script>
+</body>
+</html>

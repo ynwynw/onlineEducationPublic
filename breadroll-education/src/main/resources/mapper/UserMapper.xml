@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.UserMapper">
+    <select id="queryUserByAccount" parameterType="String" resultType="User">
+        select * from user where user_account = #{userAccount} and !delete_state;
+    </select>
+
+    <select id="queryUserById" parameterType="Integer" resultType="User">
+        select * from user where user_id = #{userId} and !delete_state;
+    </select>
+
+    <select id="queryUserByPhone" parameterType="String" resultType="User">
+        select * from user where user_phone = #{userPhone} and !delete_state;
+    </select>
+
+    <insert id="insertUser" parameterType="User">
+        <selectKey keyProperty="userId" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into user (user_account, user_name, pass_word)
+        values (#{userAccount},#{userName},#{passWord});
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        update user
+        <set>
+        <if test="userName != null and userName !=''">user_name =#{userName},</if>
+        <if test="passWord != null and passWord !=''">pass_word =#{passWord},</if>
+        <if test="userGender != null and userGender !=''">user_gender =#{userGender},</if>
+        <if test="userBirthday != null">user_birthday =#{userBirthday},</if>
+        <if test="idCard != null and idCard !=''">id_card =#{idCard},</if>
+        <if test="learnTarget != null and learnTarget !=''">learn_target =#{learnTarget},</if>
+        <if test="loginTime != null">login_time =#{loginTime},</if>
+        <if test="description != null and userGender !=''">description =#{description},</if>
+        <if test="avatarUrl != null and avatarUrl !=''">avatar_url =#{avatarUrl},</if>
+        <if test="backgroundUrl != null and backgroundUrl !=''">background_url =#{backgroundUrl},</if>
+        <if test="userPhone != null and userPhone !=''">user_phone =#{userPhone},</if>
+        <if test="updateTime != null">update_time =#{updateTime},</if>
+        <if test="lockedState != null and lockedState !=''">locked_state =#{lockedState},</if>
+        <if test="deleteState != null and deleteState !=''">delete_state =#{deleteState},</if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+</mapper>

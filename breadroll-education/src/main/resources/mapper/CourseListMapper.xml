@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CourseListMapper">
+    <select id="selectListByCourseId" resultType="CourseList" parameterType="Integer">
+        select * from course_list where course_id=#{courseId} order by list_id;
+    </select>
+
+    <!--根据目录Id查询课程目录-->
+    <select id="selectListById" resultType="CourseList" parameterType="Integer">
+        select * from course_list where list_id =#{listId};
+    </select>
+</mapper>

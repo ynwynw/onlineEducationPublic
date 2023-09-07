@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.DepartmentMapper">
+    <select id="queryPageDepartment" resultType="Department">
+        select * from department where delete_state=0
+    </select>
+    <select id="queryAllDepartment" resultType="Department">
+        select * from department where delete_state=0;
+    </select>
+    <select id="queryDepartmentById" parameterType="int" resultType="Department">
+        select * from department where department_id=#{departmentId};
+    </select>
+    <insert id="addDepartment" parameterType="Department">
+        insert into department (department_name, description) values (#{departmentName},#{description})
+    </insert>
+    <update id="updateDepartment" parameterType="Department">
+        update department set department_name=#{departmentName},description=#{description} where department_id=#{departmentId};
+    </update>
+    <update id="deleteDepartment" parameterType="int">
+        update department set delete_state=1 where department_id=#{departmentId};
+    </update>
+    <select id="queryExciseNameExceptSelf" resultType="Department">
+        select * from department where delete_state=0 and department_id!=#{departmentId} and department_name=#{departmentName};
+    </select>
+    <select id="queryExciseName" resultType="Department">
+        select * from department where delete_state=0 and department_name=#{departmentName};
+    </select>
+    <update id="updateDepartmentState" parameterType="int">
+        update department set department_state=not department_state where department_id=#{departmentId};
+    </update>
+    <select id="searchDepartment" parameterType="Department" resultType="Department">
+        select * from department where delete_state=0
+                    <if test="departmentId!=null">
+                        and department_id=#{departmentId}
+                    </if>
+                    <if test="departmentName!=null and departmentName!=''">
+                        and department_name like concat('%',#{departmentName},'%')
+                    </if>
+    </select>
+    <select id="totalSearchDepartment" parameterType="Department" resultType="Department">
+        select * from department where delete_state=0
+        <if test="departmentId!=null">
+            and department_id=#{departmentId}
+        </if>
+        <if test="departmentName!=null and departmentName!=''">
+            and department_name like concat('%',#{departmentName},'%')
+        </if>
+    </select>
+    <select id="queryUseAbleDepartment" resultType="Department">
+        select * from department where delete_state=0 and department_state=1;
+    </select>
+</mapper>

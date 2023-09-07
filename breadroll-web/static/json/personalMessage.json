@@ -1,0 +1,46 @@
+{
+  "data": [
+    {
+      "messageId": 0,
+      "title": "开通会员",
+      "read_state": false,
+      "content": "恭喜您开通月会员，并赠送您100花卷币；到期时间：2021-06-05 15:26:00",
+      "publishTime":"2021-05-05 15:26:00"
+    },
+    {
+      "messageId": 1,
+      "title": "扣除花卷币",
+      "read_state": false,
+      "content": "您兑换学习资源 <strong>Springboot课堂笔记</strong> ，扣除200花卷币",
+      "url": "https://www.wanmen.org/courses/5c77b9a299248320d31fe73a",
+      "publishTime":"2020-09-14 15:26:00"
+    },
+    {
+      "messageId": 2,
+      "title": "权限到期",
+      "read_state": false,
+      "content": "您的《Vue.js 实战开发特训班》课程权限已经到期<br>权限关闭时间：2020-06-12 10:06:01",
+      "url": "https://www.wanmen.org/courses/5c77b9a299248320d31fe73a",
+      "publishTime":"2020-09-14 15:26:00"
+    },
+    {
+      "messageId": 3,
+      "title": "重要提示",
+      "read_state": true,
+      "content": "亲爱的同学，由于QQ平台系统升级维护，请您配合验证QQ账号，点击此信息可跳转完成QQ绑定><br/>若忽略此信息会影响您下次使用QQ登录。",
+      "url": "#/accountCenter",
+      "publishTime":"2020-09-12 15:26:00"
+    },
+    {
+      "messageId": 4,
+      "title": "新用户注册通知",
+      "read_state": true,
+      "content": "尊敬的用户：【马英发】您好，欢迎您加入在线教育平台！赠送您50花卷币，快去个人中心完善信息吧！",
+      "url": "#/accountCenter",
+      "publishTime":"2021-01-19 15:26:00"
+    }
+  ]
+}
+
+
+

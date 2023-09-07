@@ -1,0 +1,146 @@
+{
+  "data": [
+    {
+      "courseId": 1,
+      "courseName": "商业数据分析特训班",
+      "description": "专业讲师团队打造精品课程，带你从0到1",
+      "courseTime": "132.4",
+      "coverUrl": "https://imgs.wanmen.org/c16bd3d7a8f6554ad23203217e464a18.png",
+      "price": 3998
+    },
+    {
+      "courseId": 2,
+      "courseName": "人工智能、大数据与复杂系统",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "164.9",
+      "coverUrl": "https://imgs.wanmen.org/395455ddb9b90dac6017a82dc031de8e.png",
+      "price": 3998
+    },
+    {
+      "courseId": 3,
+      "courseName": "使用数据挖掘与人工智能",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "130.4",
+      "coverUrl": "https://imgs.wanmen.org/4ecb97fe04943a90f6c3a625b6cbc438.png",
+      "price": 3998
+    },
+    {
+      "courseId": 4,
+      "courseName": "理论物理-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "138.3",
+      "coverUrl": "https://imgs.wanmen.org/e92469030624827ac69d496ae4cfa1e3.png",
+      "price": 3998
+    },
+    {
+      "courseId": 5,
+      "courseName": "BEC商务英语-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "130.4",
+      "coverUrl": "https://imgs.wanmen.org/2f49a92149da519972ca82e711f85984.png",
+      "price": 3998
+    },
+    {
+      "courseId": 6,
+      "courseName": "理论物理-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "138.3",
+      "coverUrl": "https://imgs.wanmen.org/b5eb7d433ddf70819c8c8e4e7bde097b.png",
+      "price": 3998
+    },{
+      "courseId": 1,
+      "courseName": "商业数据分析特训班",
+      "description": "专业讲师团队打造精品课程，带你从0到1",
+      "courseTime": "132.4",
+      "coverUrl": "https://imgs.wanmen.org/c16bd3d7a8f6554ad23203217e464a18.png",
+      "price": 3998
+    },
+    {
+      "courseId": 2,
+      "courseName": "人工智能、大数据与复杂系统",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "164.9",
+      "coverUrl": "https://imgs.wanmen.org/395455ddb9b90dac6017a82dc031de8e.png",
+      "price": 3998
+    },
+    {
+      "courseId": 3,
+      "courseName": "使用数据挖掘与人工智能",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "130.4",
+      "coverUrl": "https://imgs.wanmen.org/4ecb97fe04943a90f6c3a625b6cbc438.png",
+      "price": 3998
+    },
+    {
+      "courseId": 4,
+      "courseName": "理论物理-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "138.3",
+      "coverUrl": "https://imgs.wanmen.org/e92469030624827ac69d496ae4cfa1e3.png",
+      "price": 3998
+    },
+    {
+      "courseId": 5,
+      "courseName": "BEC商务英语-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "130.4",
+      "coverUrl": "https://imgs.wanmen.org/2f49a92149da519972ca82e711f85984.png",
+      "price": 3998
+    },
+    {
+      "courseId": 6,
+      "courseName": "理论物理-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "138.3",
+      "coverUrl": "https://imgs.wanmen.org/b5eb7d433ddf70819c8c8e4e7bde097b.png",
+      "price": 3998
+    },{
+      "courseId": 1,
+      "courseName": "商业数据分析特训班",
+      "description": "专业讲师团队打造精品课程，带你从0到1",
+      "courseTime": "132.4",
+      "coverUrl": "https://imgs.wanmen.org/c16bd3d7a8f6554ad23203217e464a18.png",
+      "price": 3998
+    },
+    {
+      "courseId": 2,
+      "courseName": "人工智能、大数据与复杂系统",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "164.9",
+      "coverUrl": "https://imgs.wanmen.org/395455ddb9b90dac6017a82dc031de8e.png",
+      "price": 3998
+    },
+    {
+      "courseId": 3,
+      "courseName": "使用数据挖掘与人工智能",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "130.4",
+      "coverUrl": "https://imgs.wanmen.org/4ecb97fe04943a90f6c3a625b6cbc438.png",
+      "price": 3998
+    },
+    {
+      "courseId": 4,
+      "courseName": "理论物理-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "138.3",
+      "coverUrl": "https://imgs.wanmen.org/e92469030624827ac69d496ae4cfa1e3.png",
+      "price": 3998
+    },
+    {
+      "courseId": 5,
+      "courseName": "BEC商务英语-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "130.4",
+      "coverUrl": "https://imgs.wanmen.org/2f49a92149da519972ca82e711f85984.png",
+      "price": 3998
+    },
+    {
+      "courseId": 6,
+      "courseName": "理论物理-月特训班",
+      "description": "课程介绍人工智能、复杂系统、大数据的相关知识；带你走进不一样的生活",
+      "courseTime": "138.3",
+      "coverUrl": "https://imgs.wanmen.org/b5eb7d433ddf70819c8c8e4e7bde097b.png",
+      "price": 3998
+    }
+  ]
+}

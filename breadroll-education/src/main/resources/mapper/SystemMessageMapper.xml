@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.SystemMessageMapper">
+    <!--查询所有消息-->
+    <select id="selectAllMessage" resultType="SystemMessage">
+        select * from system_message where !delete_state order by publish_time desc
+    </select>
+    <!--查询总数-->
+    <select id="queryCount" resultType="Integer">
+        select count(*) from system_message where !delete_state;
+    </select>
+</mapper>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员列表</title>
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <form id="searchForm" class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">管理员ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="managerId" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">管理员姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="managerName" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">性别</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="managerGender" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="departmentPhone" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">部门名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="departmentName" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="search"><i class="layui-icon"></i> 搜 索</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal data-add-btn" lay-event="add"> 添加 </button>
+            </div>
+        </script>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-sm data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-sm data-count-delete" lay-event="delete">删除</a>
+        </script>
+        <script type="text/html" id="lockedState">
+            <!-- 这里的 checked 的状态只是演示 -->
+
+            {{# if(d.managerId===1){ }}
+                <input type="checkbox" name="lockedState" value="{{d.lockedState}}" lay-skin="switch" lay-text="是|否" lay-event="lockedState">
+            {{# }else { }}
+                <input type="checkbox" name="lockedState" value="{{d.lockedState}}" lay-skin="switch" lay-text="是|否" lay-event="lockedState" {{ d.lockedState ?  'checked' : '' }}>
+            {{# }  }}
+        </script>
+    </div>
+</div>
+<script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script src="/static/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script th:inline="none">
+    let documentWidth = $(document).width();
+    let myTable;
+    let userName;
+    layui.use(['form', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        myTable = table.render({
+            elem: '#currentTableId',
+            url: '/manager/pageList',
+            method: "get",
+            toolbar: '#toolbarDemo',
+            parseData: function (res) {
+                return {
+                    "code": 0,
+                    "msg": res.message,
+                    "count": res.data.total,
+                    "data": res.data.list
+                }
+            },
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {field: 'managerId', width: documentWidth*80/1000, title: '编号', sort: true, align: "center"},
+                {field: 'managerAccount', width: documentWidth*180/1000, title: '管理员帐号', sort: true, align: "center"},
+                {field: 'managerName', width: documentWidth*110/1000, title: '姓名', align: "center"},
+                {field: 'managerGender', width: documentWidth*80/1000, title: '性别', sort: true, align: "center"},
+                {field: 'managerPhone', width: documentWidth*130/1000, title: '手机号', align: "center"},
+                {field: 'departmentId', width: documentWidth*100/1000, title: '部门ID',hide: true, align: "center"},
+                {field: 'departmentName', width: documentWidth*130/1000, title: '部门名称', align: "center"},
+                {
+                    field: 'lockedState',
+                    width: documentWidth*110/1000,
+                    title: '禁用状态',
+                    templet: '#lockedState',
+                    event: "lockedState",
+                    unresize: true,
+                    sort: true,
+                    align: "center"
+                },
+                {title: '操作', toolbar: '#currentTableBar', align: "center"},
+            ]]
+            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , curr: 1 //设定初始在第 5 页
+                , limit: 10
+                , limits: [5, 10, 15]
+                , groups: 5 //只显示 1 个连续页码
+                , first: true //不显示首页
+                , last: true //不显示尾页
+            },
+            request: {
+                pageName: "pageNum",
+                limitName: "pageSize"
+            },
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                let index = layer.open({
+                    title: '添加管理员',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/manager/goToEditManager?managerId=0'
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                let checkStatus = table.checkStatus('currentTableId'),
+                    data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+
+        //搜索
+        form.on('submit(search)', function(data){
+            console.log("搜索");
+            myTable.reload({
+                url:"/manager/searchManager",
+                method: "post",
+                page: {
+                    curr: 1 //设定初始在第 5 页
+                    ,limit: 10
+                },
+                request:{
+                    pageName:"pageNum",
+                    limitName: "pageSize"
+                },
+                where:{
+                    managerId:data.field.managerId,
+                    managerName:data.field.managerName,
+                    managerGender:data.field.managerGender,
+                    managerPhone:data.field.managerPhone,
+                    departmentName:data.field.departmentName
+                },
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'edit') {
+                let index = layer.open({
+                    title: '编辑管理员',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/manager/goToEditManager?managerId=' + data.managerId
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'lockedState') {
+                $.ajax({
+                    type: "get",
+                    url: '/manager/updateLockState',
+                    data: {managerId: data.managerId},
+                    success: function (res) {
+                        if(res.code===200){
+                            if (data.lockedState) {
+                                layer.msg(data.managerName + "已被任职");
+                            } else {
+                                layer.msg(data.managerName + "已被禁用");
+                            }
+                            myTable.reload({
+                                url: "/manager/pageList",
+                                method: "get",
+                                page: {
+                                    curr: 1 //设定初始在第 5 页
+                                    , limit: 10
+                                },
+                                request: {
+                                    pageName: "pageNum",
+                                    limitName: "pageSize"
+                                }
+                            })
+                        }else {
+                            layer.msg(res.message);
+                            myTable.reload({
+                                url: "/manager/pageList",
+                                method: "get",
+                                page: {
+                                    curr: 1 //设定初始在第 5 页
+                                    , limit: 10
+                                },
+                                request: {
+                                    pageName: "pageNum",
+                                    limitName: "pageSize"
+                                }
+                            })
+                        }
+
+                    },
+                    error: function (error) {
+                        layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                    }
+                })
+                layui.table.render(); //重新渲染显示效果
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除 ' + data.managerName + ' 管理员么？',{icon: 3}, function (index) {
+                    $.ajax({
+                        type: "get",
+                        url: '/manager/deleteManager',
+                        data: {managerId: data.managerId},
+                        success: function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+
+                            } else {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+                            }
+                        },
+                        error: function (error) {
+                            layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                        }
+                    })
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

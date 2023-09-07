@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.ManagerMapper">
+    <select id="queryManagerByName" parameterType="String" resultType="Manager">
+        select * from manager where manager_name=#{managerName} and delete_state=0;
+    </select>
+    <select id="queryPageManager" resultType="Manager">
+        select * from manager where delete_state=0
+    </select>
+    <select id="queryAllManager" resultType="Manager">
+        select * from manager where delete_state=0;
+    </select>
+    <update id="updateLockState" parameterType="int">
+        update manager set locked_state=not locked_state where manager_id=#{managerId}
+    </update>
+    <select id="queryManagerById" parameterType="int" resultType="Manager">
+        select * from manager where manager_id=#{managerId} and delete_state=0;
+    </select>
+    <select id="queryManagerByAccount" parameterType="String" resultType="Manager">
+        select * from manager where manager_account=#{managerAccount} and delete_state=0;
+    </select>
+    <select id="searchManager" parameterType="Manager" resultType="Manager">
+        select * from manager where delete_state=0
+            <if test="managerId != null">
+                and manager_id=#{managerId}
+            </if>
+            <if test="managerName!=null and managerName != ''">
+                and manager_name like concat('%',#{managerName},'%')
+            </if>
+            <if test="managerGender!=null and managerGender != ''">
+                and manager_gender=#{managerGender}
+            </if>
+            <if test="managerPhone!=null and managerPhone != ''">
+                and manager_phone=#{managerPhone}
+            </if>
+            <if test="departmentName!=null and departmentName != ''">
+                and department_name like concat('%',#{departmentName},'%')
+            </if>
+    </select>
+    <select id="totalSearchManager" parameterType="Manager" resultType="Manager">
+        select * from manager where delete_state=0
+        <if test="managerId != null">
+            and manager_id=#{managerId}
+        </if>
+        <if test="managerName!=null and managerName != ''">
+            and manager_name like concat('%',#{managerName},'%')
+        </if>
+        <if test="managerGender!=null and managerGender != ''">
+            and manager_gender=#{managerGender}
+        </if>
+        <if test="managerPhone!=null and managerPhone != ''">
+            and manager_phone=#{managerPhone}
+        </if>
+        <if test="departmentName!=null and departmentName != ''">
+            and department_name like concat('%',#{departmentName},'%')
+        </if>
+    </select>
+    <insert id="addManager" parameterType="Manager">
+        <selectKey keyProperty="managerId" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into manager (manager_account, manager_name, pass_word, department_id, department_name) values
+                            (#{managerAccount},#{managerName},#{passWord},#{departmentId},#{departmentName})
+    </insert>
+    <update id="updateManagerDepartment" parameterType="Manager">
+        update manager set department_id=#{departmentId},department_name=#{departmentName},update_time=#{updateTime} where manager_id=#{managerId};
+    </update>
+    <update id="updateManagerInfo" parameterType="Manager">
+        update manager set manager_name=#{managerName}, manager_gender=#{managerGender},manager_phone=#{managerPhone},id_card=#{idCard},avatar_url=#{avatarUrl} where manager_id=#{managerId}
+    </update>
+    <select id="queryManagerIdByAccount" parameterType="String" resultType="int">
+        select manager_id from manager where manager_account=#{managerAccount} and delete_state=0;
+    </select>
+    <select id="queryNameIsExcise" parameterType="String" resultType="Manager">
+        select * from manager where manager_name=#{managerName} and delete_state=0;
+    </select>
+    <select id="queryAccountIsExcise" parameterType="String" resultType="Manager">
+        select * from manager where manager_account=#{managerAccount} and delete_state=0;
+    </select>
+    <update id="updatePassWord">
+        update manager set pass_word=#{passWord} where manager_id=#{managerId} and delete_state=0;
+    </update>
+    <select id="queryPassWord" parameterType="String" resultType="String">
+        select pass_word from manager where manager_name=#{managerName} and delete_state=0;
+    </select>
+    <update id="changePassWord" parameterType="String">
+        update manager set pass_word=#{passWord} where manager_account=#{managerAccount} and delete_state=0;
+    </update>
+    <update id="deleteManager" parameterType="int">
+        update manager set delete_state=1 where manager_id=#{managerId} and delete_state=0;
+    </update>
+    <select id="queryExceptSelfIsExcise" resultType="Manager">
+        select * from manager where manager_name=#{managerName} and manager_id!=#{managerId} and delete_state=0;
+    </select>
+    <select id="queryExceptsPhone" resultType="Manager">
+        select * from manager where manager_id!=#{managerId} and manager_phone=#{managerPhone} and delete_state=0;
+    </select>
+</mapper>

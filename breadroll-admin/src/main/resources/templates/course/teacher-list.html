@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>讲师列表</title>
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+    <style>
+        .layui-table-body{
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form id="searchForm" class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">讲师ID</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="teacherId" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">讲师姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="teacherName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="teacherGender" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button id="sub" class="layui-btn layui-btn-primary"  lay-submit lay-filter="search"><i class="layui-icon"></i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal data-add-btn" lay-event="add"> 添加 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-sm data-count-edit" lay-event="edit">编辑信息</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="delete">删除讲师</a>
+        </script>
+        <script type="text/html" id="teacherState">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="teacherState" value="{{d.teacherState}}" lay-skin="switch" lay-text="启用|禁用" lay-event="teacherState" {{ d.teacherState ? 'checked' : '' }}>
+        </script>
+
+    </div>
+</div>
+<script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script th:inline="none">
+    let data={
+        teacherId: null,
+        teacherName: null,
+        teacherGender: null,
+    }
+    let myTable;
+    layui.use(['form', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        myTable=table.render({
+            elem: '#currentTableId',
+            url: '/teacher/list',
+            method: "get",
+            toolbar: '#toolbarDemo',
+            parseData: function (res) {
+                return {
+                    "code": 0,
+                    "msg": res.message,
+                    "count": res.data.total,
+                    "data": res.data.list
+                }
+            },
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {field: 'teacherId', width: "8%", title: '讲师编号', sort: true, align: "center"},
+                {field: 'teacherName', width: "17%", title: '讲师姓名', align: "center"},
+                {field: 'teacherGender', width: "10%", title: '性别', sort: true, align: "center"},
+                {field: 'idCard', title: '身份证号', hide: true, align: "center"},
+                {field: 'description', title: '讲师介绍', hide: true, align: "center"},
+                {field: 'teacherPhone', width: "16%", title: '电话', align: "center"},
+                {field: 'entryTime', width: "17%", title: '入职时间', sort: true, align: "center"},
+                {field: 'teacherState', width: "12%", title: '任职状态',templet:'#teacherState',event:"teacherState", unresize: true, align: "center"},
+                {title: '操作', toolbar: '#currentTableBar', align: "center"},
+            ]]
+            ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                ,curr: 1 //设定初始在第 5 页
+                ,limit: 10
+                ,limits: [10,15,30,60]
+                ,groups: 5 //只显示 1 个连续页码
+                ,first: true //不显示首页
+                ,last: true //不显示尾页
+            },
+            request:{
+                pageName:"pageNum",
+                limitName: "pageSize"
+            },
+            done:function (){
+                $("table").css("width","100%");
+            }
+        });
+
+        //搜索
+        form.on('submit(search)', function(data){
+            //layer.load();
+            myTable.reload({
+                url:"/teacher/selectTeacher",
+                method: "post",
+                page: {
+                    curr: 1 //设定初始在第 5 页
+                    ,limit: 10
+                },
+                request:{
+                    pageName:"pageNum",
+                    limitName: "pageSize"
+                },
+                where:{
+                    teacherId:data.field.teacherId,
+                    teacherName:data.field.teacherName,
+                    teacherGender:data.field.teacherGender,
+                },
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                let index = layer.open({
+                    title: '添加用户',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/teacher/goToEditCourse?teacherId=0'
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                let checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'edit') {
+                let index = layer.open({
+                    title: '编辑课程',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content:"/teacher/goToEditCourse?teacherId="+data.teacherId
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除 '+data.teacherName+' 讲师吗？',{icon:3}, function (index) {
+                    $.ajax({
+                        type: "get",
+                        url: '/teacher/delTeacher',
+                        data: {teacherId: data.teacherId},
+                        success: function (res) {
+                            if (res.code === 200) {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+
+                            } else {
+                                layer.msg(res.message, {time: 5000, icon: 1, offset: [15]});
+                            }
+                        },
+                        error: function (error) {
+                            layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                        }
+                    })
+                    obj.del();
+                    layer.close(index);
+                });
+            }else if (obj.event === 'teacherState') {
+
+                $.ajax({
+                    type: "get",
+                    url: '/teacher/updateTeacherState',
+                    data: {teacherId: data.teacherId},
+                    success: function (res) {
+                        if(!data.teacherState){
+                            layer.msg(data.teacherName+"已被任职");
+                        }else{
+                            layer.msg(data.teacherName+"已被禁用");
+                        }
+                        myTable.reload({
+                            url:"/teacher/list",
+                            method: "get",
+                            page: {
+                                curr: 1 //设定初始在第 5 页
+                                ,limit: 10
+                            },
+                            request:{
+                                pageName:"pageNum",
+                                limitName: "pageSize"
+                            }
+                        })
+                    },
+                    error: function (error) {
+                        layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                    }
+                })
+                layui.table.render(); //重新渲染显示效果
+            }
+        });
+   });
+</script>
+</body>
+</html>

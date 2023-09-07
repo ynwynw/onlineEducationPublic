@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "bannerId": 1,
+      "courseName": "人像修图入门课",
+      "courseId": 1,
+      "bannerUrl": "https://imgs.wanmen.org/04054805a22632f5c927063208e5b84e.png"
+    },
+    {
+      "bannerId": 2,
+      "courseName": "Excel 基础入门",
+      "courseId": 2,
+      "bannerUrl": "https://imgs.wanmen.org/1b3d4fe6d934b9cb66b951d06445ca3c.png"
+    },
+    {
+      "bannerId": 3,
+      "courseName": "Python基础趣讲精炼",
+      "courseId": 3,
+      "bannerUrl": "https://imgs.wanmen.org/380c5984d42c82d0538caec4024b79c0.png"
+    },
+    {
+      "bannerId": 4,
+      "courseName": "证券投资入门：组合决策与管理",
+      "courseId": 4,
+      "bannerUrl": "https://imgs.wanmen.org/3d5ce0d8b65d753a5d46ab2367f3ede2.png"
+    }
+  ]
+}

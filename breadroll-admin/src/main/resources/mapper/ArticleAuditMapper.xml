@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.ArticleAuditMapper">
+    <select id="queryPageAudit" resultType="ArticleAudit">
+        select * from article_audit where delete_state=0 order by audit_state, audit_time desc
+    </select>
+    <select id="totalAudit" resultType="ArticleAudit">
+        select * from article_audit where delete_state=0;
+    </select>
+    <insert id="addArticleAudit" parameterType="ArticleAudit">
+        insert into article_audit (article_id, article_title, publisher_id, publisher) VALUES
+                                (#{articleId},#{articleTitle},#{publisherId},#{publisher});
+
+    </insert>
+    <update id="updateArticleAudit">
+        update article_audit set audit_state=#{auditState} where article_id=#{articleId} and audit_state!=3;
+    </update>
+    <select id="queryAuditById" parameterType="int" resultType="ArticleAudit">
+        select * from article_audit where audit_id=#{auditId};
+    </select>
+    <update id="addArticleAuditRemark" parameterType="ArticleAudit">
+        update article_audit set reviewer_id=#{reviewerId},reviewer=#{reviewer},remark=#{remark},audit_state=#{auditState},audit_time=#{auditTime} where article_id=#{articleId} and audit_state=0;
+    </update>
+    <select id="queryRefuseCause" parameterType="int" resultType="String">
+        select remark from article_audit where article_id=#{articleId} and audit_state=2;
+    </select>
+    <select id="searchArticleAudit" parameterType="ArticleAudit" resultType="ArticleAudit">
+        select * from article_audit where delete_state=0
+            <if test="articleTitle!=null and articleTitle!=''">
+                and article_title like concat('%',#{articleTitle},'%')
+            </if>
+    </select>
+    <select id="totalSearchArticleAudit" parameterType="ArticleAudit" resultType="ArticleAudit">
+        select * from article_audit where delete_state=0
+        <if test="articleTitle!=null and articleTitle!=''">
+            and article_title like concat('%',#{articleTitle},'%')
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.SystemMessageMapper">
+    <select id="queryPageMessage" resultType="SystemMessage">
+        select * from system_message where delete_state=0 order by publish_time desc
+    </select>
+    <select id="queryTotalMessage" resultType="SystemMessage">
+        select * from system_message where delete_state=0 order by publish_time desc;
+    </select>
+    <insert id="addSystemMessage" parameterType="SystemMessage">
+        insert into system_message (title, content, publisher_id, publisher, url) VALUES
+                    (#{title},#{content},#{publisherId},#{publisher},#{url});
+    </insert>
+    <select id="queryMessageById" parameterType="int" resultType="SystemMessage">
+        select * from system_message where message_id=#{messageId};
+    </select>
+    <update id="updateSystemMessage" parameterType="SystemMessage">
+        update system_message set title=#{title},content=#{content},publisher_id=#{publisherId},
+                                  publisher=#{publisher},url=#{url} where message_id=#{messageId};
+    </update>
+    <select id="searchSystemMessage" parameterType="SystemMessage" resultType="SystemMessage">
+        select * from system_message where delete_state=0
+                    <if test="title!=null and title!=''">
+                        and title like concat('%',#{title},'%')
+                    </if>
+                    <if test="publishTime!=null">
+                        and datediff(publish_time,#{publishTime})=0
+                    </if>
+
+    </select>
+    <select id="totalSearchSystemMessage" parameterType="SystemMessage" resultType="SystemMessage">
+        select * from system_message where delete_state=0
+        <if test="title!=null and title!=''">
+            and title like concat('%',#{title},'%')
+        </if>
+        <if test="publishTime!=null">
+            and datediff(publish_time,#{publishTime})=0
+        </if>
+
+    </select>
+    <update id="deleteSystemMessage" parameterType="int">
+        update system_message set delete_state=1 where message_id=#{messageId};
+    </update>
+</mapper>

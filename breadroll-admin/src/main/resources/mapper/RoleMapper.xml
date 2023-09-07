@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.RoleMapper">
+    <select id="queryAllRole" resultType="Role">
+        select * from role where role_url != '/**/**';
+    </select>
+    <select id="queryPageRole" resultType="Role">
+        select * from role where role_url != '/**/**'
+    </select>
+    <select id="searchRole" parameterType="Role" resultType="Role">
+        select * from role where role_url != '/**/**'
+                    <if test="roleId!=null">
+                        role_id=#{roleId}
+                    </if>
+                    <if test="roleName!=null and roleName!=''">
+                        and role_name like concat('%',#{roleName},'%')
+                    </if>
+    </select>
+    <select id="totalSearchRole" parameterType="Role" resultType="Role">
+        select * from role where role_url != '/**/**'
+            <if test="roleId!=null">
+                role_id=#{roleId}
+            </if>
+            <if test="roleName!=null and roleName!=''">
+                and role_name like concat('%',#{roleName},'%')
+            </if>
+    </select>
+    <update id="updateRole" parameterType="Role">
+        update role set role_describe=#{roleDescribe} where role_id=#{roleId};
+    </update>
+    <select id="queryRoleById" parameterType="int" resultType="Role">
+        select * from role where role_id=#{roleId};
+    </select>
+    <update id="updateRoleState" parameterType="int">
+        update role set role_state=not role_state where role_id=#{roleId};
+    </update>
+    <select id="queryUseAbleRole" resultType="Role">
+        select * from role where role_state=1 and role_url != '/**/**' order by role_type;
+    </select>
+    <select id="queryRoleId" parameterType="String" resultType="Integer">
+        select role_id from role where role_name=#{roleName};
+    </select>
+    <select id="queryRoleType" resultType="String">
+        select role_type from role where role.role_url!='/**/**' group by role_type;
+    </select>
+    <select id="queryRoleByRoleType" parameterType="String" resultType="Role">
+        select * from role where role_type=#{roleTypew} and role_state=1 and role_url !='/role/**';
+    </select>
+</mapper>

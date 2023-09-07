@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+    <link rel="stylesheet" href="/static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/css/public.css" media="all">
+    <script src="/static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+    <script src="/static/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset">
+            <form id="searchForm" class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">用户ID</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userId" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">用户姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userName" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">性别</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userGender" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userPhone" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="search"><i class="layui-icon"></i> 搜 索</button>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="lockedState">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="lockedState" value="{{d.lockedState}}" lay-skin="switch" lay-text="是|否" lay-event="lockedState" {{ d.lockedState ?  'checked' : '' }}>
+        </script>
+    </div>
+</div>
+<script th:inline="none">
+    let documentWidth = $(document).width();
+    console.log(documentWidth)
+    let myTable;
+    layui.use(['form', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        myTable = table.render({
+            elem: '#currentTableId',
+            url: '/user/pageList',
+            method: "get",
+            toolbar: '#toolbarDemo',
+            parseData: function (res) {
+                return {
+                    "code": 0,
+                    "msg": res.message,
+                    "count": res.data.total,
+                    "data": res.data.list
+                }
+            },
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {field: 'userId', width: documentWidth*80/1000, title: '编号', sort: true, align: "center"},
+                {field: 'userAccount',width: documentWidth*150/1000,title: '用户账号',sort: true, align: "center"},
+                {field: 'userName', width: documentWidth*120/1000, title: '姓名', align: "center"},
+                {field: 'userGender', width: documentWidth*90/1000, title: '性别', sort: true, align: "center"},
+                {field: 'userPhone', width: documentWidth*120/1000, title: '手机号', align: "center"},
+                {field: 'registerTime', width: documentWidth*140/1000, title: '注册时间', align: "center"},
+                {field: 'loginTime', width: documentWidth*140/1000, title: '登录时间', align: "center"},
+                {
+                    field: 'lockedState',
+                    title: '禁用状态',
+                    templet: '#lockedState',
+                    event: "lockedState",
+                    unresize: true,
+                    sort: true,
+                    align: "center"
+                }
+            ]]
+            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , curr: 1 //设定初始在第 5 页
+                , limit: 10
+                , limits: [5, 10, 15]
+                , groups: 5 //只显示 1 个连续页码
+                , first: true //不显示首页
+                , last: true //不显示尾页
+            },
+            request: {
+                pageName: "pageNum",
+                limitName: "pageSize"
+            },
+        });
+
+        //搜索
+        form.on('submit(search)', function(data){
+            console.log("搜索");
+            myTable.reload({
+                url:"/user/searchUser",
+                method: "post",
+                page: {
+                    curr: 1 //设定初始在第 5 页
+                    ,limit: 10
+                },
+                request:{
+                    pageName:"pageNum",
+                    limitName: "pageSize"
+                },
+                where:{
+                    userId:data.field.userId,
+                    userName:data.field.userName,
+                    userGender:data.field.userGender,
+                    userPhone:data.field.userPhone,
+                },
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'lockedState') {
+                $.ajax({
+                    type: "get",
+                    url: '/user/updateLocakState',
+                    data: {userId: data.userId},
+                    success: function (res) {
+                        if (data.lockedState) {
+                            layer.msg(data.userName + "已被解禁");
+                        } else {
+                            layer.msg(data.userName + "已被禁用");
+                        }
+                        myTable.reload({
+                            url: "/user/pageList",
+                            method: "get",
+                            page: {
+                                curr: 1 //设定初始在第 5 页
+                                , limit: 5
+                            },
+                            request: {
+                                pageName: "pageNum",
+                                limitName: "pageSize"
+                            }
+                        })
+                    },
+                    error: function (error) {
+                        layer.msg(error, {time: 5000, icon: 2, offset: [15]})
+                    }
+                })
+                layui.table.render(); //重新渲染显示效果
+            }
+        });
+    });
+</script>
+</body>
+</html>

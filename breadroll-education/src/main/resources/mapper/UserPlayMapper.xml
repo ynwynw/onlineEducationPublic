@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.UserPlayMapper">
+    <!--查询用户播放记录-->
+    <select id="selectUserPlay" parameterType="Integer" resultType="UserPlay">
+        select * from user_play where user_id=#{userId} and course_id=#{courseId}
+    </select>
+
+    <!--添加用户播放记录-->
+    <insert id="insertPlayRecord" parameterType="UserPlay">
+        insert into user_play (user_id, course_id, list_id, play_time)
+        values (#{userId},#{courseId},#{listId},#{playTime});
+    </insert>
+
+    <!--更新用户播放记录-->
+    <update id="updatePlayRecord" parameterType="UserPlay">
+        update user_play
+        set list_id = #{listId},play_time=#{playTime}
+        where id=#{id};
+    </update>
+</mapper>

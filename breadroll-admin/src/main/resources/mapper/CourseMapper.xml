@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CourseMapper">
+    <select id="queryPageOnlineCourse" resultType="CourseTeacherConn">
+        select teacher.teacher_name, course.* from course,teacher where teacher.teacher_id=course.teacher_id and  online=1 and course.delete_state=0 order by audit_state
+    </select>
+    <select id="queryAllOnlineCourse" resultType="Course">
+        select * from course where online=1 and delete_state=0 ;
+    </select>
+    <insert id="addOnlineCourse" parameterType="Course">
+        insert into course (course_name,type_id,type_name,description,teacher_id,vip_state,online,put_time,update_time,publisher,publisher_id,cover_url) values
+                    (#{courseName},#{typeId},#{typeName},#{description},#{teacherId},#{vipState},1,#{putTime},#{updateTime},#{publisher},#{publisherId},#{coverUrl});
+    </insert>
+    <update id="updateOnlineCourse" parameterType="Course">
+        update course set course_name=#{courseName},type_id=#{typeId},type_name=#{typeName},description=#{description},teacher_id=#{teacherId},vip_state=#{vipState},
+                               update_time=#{updateTime},publisher=#{publisher},publisher_id=#{publisherId},cover_url=#{coverUrl} where course_id=#{courseId}
+    </update>
+    <update id="delCourse" parameterType="int">
+        update course set delete_state=1 where course_id=#{courseId}
+    </update>
+    <select id="selOnlineCourse" parameterType="CourseTeacherConn" resultType="CourseTeacherConn">
+        select teacher.teacher_name,course.* from course,teacher where online=1 and course.teacher_id=teacher.teacher_id and course.delete_state=0
+                <if test="courseId != null">
+                    and course_id=#{courseId}
+                </if>
+                <if test="courseName!=null and courseName != ''">
+                    and course_name like concat('%',#{courseName},'%')
+                </if>
+                <if test="typeName != ''">
+                    and type_name like concat('%',#{typeName},'%')
+                </if>
+                <if test="teacherName!=''">
+                    and teacher.teacher_name like concat('%',#{teacherName},'%')
+                </if>
+    </select>
+    <select id="totalselOnlineCourse" parameterType="CourseTeacherConn" resultType="CourseTeacherConn">
+        select teacher.teacher_name,course.* from course,teacher where online=1 and course.teacher_id=teacher.teacher_id and course.delete_state=0
+        <if test="courseId != null">
+            and course_id=#{courseId}
+        </if>
+        <if test="courseName!=null and courseName != ''">
+            and course_name like concat('%',#{courseName},'%')
+        </if>
+        <if test="typeName != ''">
+            and type_name like concat('%',#{typeName},'%')
+        </if>
+        <if test="teacherName!=''">
+            and teacher.teacher_name like concat('%',#{teacherName},'%')
+        </if>
+    </select>
+    <select id="queryPageSpecialClass" resultType="CourseTeacherConn">
+        select teacher.teacher_name, course.* from course,teacher where teacher.teacher_id=course.teacher_id and  online=0 and course.delete_state=0 order by course.start_time
+    </select>
+    <insert id="addSpecialClass" parameterType="Course">
+        insert into course (course_name,type_id,type_name,description,teacher_id,online,start_time,put_time,update_time,publisher,publisher_id,price,cover_url,course_time) values
+        (#{courseName},#{typeId},#{typeName},#{description},#{teacherId},0,#{startTime},#{putTime},#{updateTime},#{publisher},#{publisherId},#{price},#{coverUrl},#{courseTime});
+    </insert>
+    <update id="updateSpecialClass" parameterType="Course">
+        update course set course_name=#{courseName},type_id=#{typeId},type_name=#{typeName},description=#{description},teacher_id=#{teacherId},update_time=#{updateTime},
+                          publisher=#{publisher},publisher_id=#{publisherId},price=#{price},cover_url=#{coverUrl},course_time=#{courseTime}, start_time=#{startTime} where course_id=#{courseId}
+    </update>
+    <select id="queryByCourseId" parameterType="int" resultType="Course">
+        select * from course where course_id=#{courseId}
+    </select>
+    <select id="queryAllSpecialClass" resultType="Course">
+        select * from course where online=0 and delete_state=0;
+    </select>
+    <select id="selSpecialCourse" parameterType="CourseTeacherConn" resultType="CourseTeacherConn">
+        select teacher.teacher_name,course.* from course,teacher where online=0 and course.teacher_id=teacher.teacher_id and course.delete_state=0
+        <if test="courseId != null">
+            and course_id=#{courseId}
+        </if>
+        <if test="courseName!=null and courseName != ''">
+            and course_name like concat('%',#{courseName},'%')
+        </if>
+        <if test="typeName != ''">
+            and type_name like concat('%',#{typeName},'%')
+        </if>
+        <if test="teacherName!=''">
+            and teacher.teacher_name like concat('%',#{teacherName},'%')
+        </if>
+        order by course.start_time
+    </select>
+    <select id="totalSelSpecialCourse" parameterType="CourseTeacherConn" resultType="CourseTeacherConn">
+        select teacher.teacher_name,course.* from course,teacher where online=0 and course.teacher_id=teacher.teacher_id and course.delete_state=0
+        <if test="courseId != null">
+            and course_id=#{courseId}
+        </if>
+        <if test="courseName!=null and courseName != ''">
+            and course_name like concat('%',#{courseName},'%')
+        </if>
+        <if test="typeName != ''">
+            and type_name like concat('%',#{typeName},'%')
+        </if>
+        <if test="teacherName!=''">
+            and teacher.teacher_name like concat('%',#{teacherName},'%')
+        </if>
+        order by course.start_time
+    </select>
+    <update id="updatePublishState">
+        update course set publish_state=not publish_state,publisher=#{publisher},publisher_id=#{publisherId} where course_id=#{courseId};
+    </update>
+    <select id="queryAllAvalibCourse" resultType="Course">
+        select * from course where online=1 and delete_state=0 and publish_state=0;
+    </select>
+    <update id="updateOFFAuditState" parameterType="int">
+        update course set audit_state=#{auditState} where course_id=#{courseId};
+    </update>
+    <select id="queryPublishedAuditedCourse" resultType="Course">
+        select * from course where delete_state=0 and publish_state=1 and audit_state=1 and online=1;
+    </select>
+    <select id="queryAuditStateById" parameterType="int" resultType="int">
+        select audit_state from course where course_id=#{courseId};
+    </select>
+    <select id="queryTopFiveCourse" resultType="Course">
+        select * from course where delete_state=0 order by play_count desc limit 5;
+    </select>
+    <select id="queryTeacherCourse" resultType="CountTeacherCourse">
+        select teacher.teacher_name,count(course.teacher_id) as courseCount,sum(course.play_count) as playCount from teacher,course where teacher.teacher_id=course.teacher_id group by course.teacher_id having count(course.teacher_id) order by courseCount desc limit 5;
+    </select>
+    <select id="queryTypeCourse" resultType="CountTypeCourse">
+        select type_name,count(type_id) as countType from course where delete_state=0 group by type_id,type_name having count(type_id) order by countType desc limit 5;
+    </select>
+</mapper>

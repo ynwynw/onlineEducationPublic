@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.SpecialAuditMapper">
+    <select id="queryPageAudit" resultType="SpecialAudit">
+        select * from special_audit where delete_state=0 order by audit_state, audit_time desc
+    </select>
+    <select id="queryTotalAudit" resultType="SpecialAudit">
+        select * from special_audit where delete_state=0;
+    </select>
+    <insert id="addSpecialAuditInfo" parameterType="SpecialAudit">
+        insert into special_audit (course_id, course_name, publisher_id, publisher) values
+        (#{courseId},#{courseName},#{publisherId},#{publisher})
+    </insert>
+    <update id="updateCourseAudit" parameterType="int">
+        update special_audit set audit_state=#{auditState} where course_id=#{courseId} and audit_state!=3;
+    </update>
+    <select id="searchCourseAudit" parameterType="SpecialAudit" resultType="SpecialAudit">
+        select * from special_audit where delete_state=0
+                <if test="courseName!=null and courseName!=''">
+                    and course_name like concat('%',#{courseName},'%')
+                </if>
+    </select>
+    <select id="totalSearchCourseAudit" parameterType="SpecialAudit" resultType="SpecialAudit">
+        select * from special_audit where delete_state=0
+        <if test="courseName!=null and courseName!=''">
+            and course_name like concat('%',#{courseName},'%')
+        </if>
+    </select>
+    <update id="addSpecialAuditRemark" parameterType="SpecialAudit">
+        update special_audit set reviewer_id=#{reviewerId},reviewer=#{reviewer},remark=#{remark},audit_state=#{auditState},audit_time=#{auditTime} where course_id=#{courseId} and audit_state=0;
+    </update>
+    <select id="queryRefuseCause" parameterType="int" resultType="String">
+        select remark from special_audit where course_id=#{courseId} and audit_state=2;
+    </select>
+    <select id="querySpecialAuditByID" parameterType="int" resultType="SpecialAudit">
+        select * from special_audit where audit_id=#{auditId};
+    </select>
+</mapper>

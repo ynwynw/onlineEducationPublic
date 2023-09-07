@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.CoachApplyMapper">
+    <select id="queryAllPageApply" parameterType="int" resultType="CoachApply">
+        select * from coach_apply where delete_state=0 and course_id=#{courseId}
+    </select>
+    <select id="queryCoachApplyById" resultType="CoachApply">
+        select * from coach_apply where delete_state=0 and coach_id=#{coachId};
+    </select>
+    <select id="queryAllApply" parameterType="int" resultType="CoachApply">
+        select * from coach_apply where delete_state=0 and course_id=#{courseId};
+    </select>
+    <update id="updateApplyState" parameterType="int">
+        update coach_apply set apply_state=2 where coach_id=#{coachId};
+    </update>
+    <update id="refuseReturnApply" parameterType="int">
+        update coach_apply set apply_state=3 where coach_id=#{coachId};
+    </update>
+    <select id="queryCountGroupApply" resultType="CountGroupApply">
+        select course_name,count(course_id) as countNumber from coach_apply where delete_state=0 group by course_id,course_name having count(course_id) order by countNumber desc limit 5;
+    </select>
+    <!--查询特训班申请退课的用户-->
+    <select id="queryRetreat" resultType="CoachApply">
+        select * from coach_apply where apply_state=1 and delete_state=0;
+    </select>
+</mapper>

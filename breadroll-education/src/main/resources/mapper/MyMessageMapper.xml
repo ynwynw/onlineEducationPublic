@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.MyMessageMapper">
+    <select id="queryMessageById" parameterType="Integer" resultType="MyMessage">
+        select * from my_message  where user_id = #{userId} and !delete_state order by publish_time desc
+    </select>
+
+    <select id="queryCount" parameterType="Integer" resultType="Integer">
+        select count(*) from my_message where user_id=#{userId} and !delete_state;
+    </select>
+
+    <!--判断用户个人是否有新消息-->
+    <select id="newMessageState" parameterType="Integer" resultType="Boolean">
+        select count(*) from my_message where user_id=#{userId} and !read_state;
+    </select>
+
+    <insert id="insertMyMessage" parameterType="MyMessage">
+        insert into my_message (user_id, title, content,publish_time, url)
+        values (#{userId},#{title},#{content},#{publishTime},#{url});
+    </insert>
+
+    <!--所有消息状态设为已读-->
+    <update id="readAllMessage" parameterType="Integer">
+        update my_message set read_state = true where user_id = #{userId};
+    </update>
+
+    <update id="updateMyMessage" parameterType="MyMessage">
+        update my_message
+        <set>
+            <if test="readState != null">read_state =#{readState},</if>
+            <if test="deleteState != null">delete_state =#{deleteState},</if>
+        </set>
+        where message_id=#{messageId};
+    </update>
+</mapper>

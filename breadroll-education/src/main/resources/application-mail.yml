@@ -1,0 +1,21 @@
+spring:
+  mail:
+    host: smtp.163.com #发送邮件服务器
+    username: 15617520389@163.com #发送邮件的邮箱地址
+    password: KMZMAZZNXAYACSFV #客户端授权码，不是邮箱密码,网易的是自己设置的
+    properties.mail.smtp.port: 994 #465或者994
+    from: 15617520389@163.com # 发送邮件的地址，和上面username一致
+    nickname: 计算机毕业设计-在线教育平台
+    properties.mail.smtp.starttls.enable: true
+    properties.mail.smtp.starttls.required: true
+    properties.mail.smtp.ssl.enable: true
+    default-encoding: utf-8
+
+sms:
+  aliyun:
+    accessKeyID: LTAI4FbgffEVhVHiUrw71eu2 # accessKeyID
+    accessKeySecret: RyWJQT7a7iH002tkSSwv58QPEfxzCH # accessKeySecret
+    domain: dysmsapi.aliyuncs.com # 固定不变
+    regionId: cn-hangzhou # 固定不变
+    templateCode: SMS_183796696 # 你的模板code
+    signName: 小毕旅游网 # 你的签名

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.qiudb.mapper.ManagerRoleMapper">
+    <select id="queryRole" parameterType="Integer" resultType="String">
+        select b.role_name from manager_role as a,role as b where
+        a.role_id = b.role_id and manager_id = #{managerId};
+    </select>
+    <select id="queryRoleId" parameterType="int" resultType="int">
+        select role_id from manager_role where manager_id=#{managerId};
+    </select>
+    <insert id="addRole" parameterType="ManagerRole">
+        insert into manager_role (manager_id, role_id) VALUES
+        <foreach collection="list" item="managerRole" separator=",">
+            (#{managerRole.managerId},#{managerRole.roleId})
+        </foreach>
+    </insert>
+    <delete id="deleteRole" parameterType="int">
+        delete from manager_role where manager_id=#{managerId};
+    </delete>
+    <select id="queryByManagerId" resultType="ManagerRole">
+        select * from manager_role where manager_id=#{managerId};
+    </select>
+</mapper>
