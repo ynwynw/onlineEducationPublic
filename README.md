@@ -26,11 +26,11 @@
 - 数据分析、公告管理、vip管理、轮播图管理、订单管理、课程审核、文章审核、资料审核、特训班审核、密码修改、个人信息管理
 
 文档截图
-![contents](./picture/picture1.png)
+![contents](./picture/picture0.png)
 管理后台功能结构
-![contents](./picture/picture2.png)
+![contents](./picture/picture1.png)
 前台功能结构
-![contents](./picture/picture3.png)
+![contents](./picture/picture2.png)
 ## 二、所用技术
 
 后端技术栈：
